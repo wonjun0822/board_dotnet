@@ -36,6 +36,7 @@ namespace board_dotnet.Model
         [Column("update_date")]
         public DateTime updateDate { get; private set; }
 
-        public Article article { get; set; }
+        [Column("article_id")]
+        public long articleId { get; set; }
     }
 }

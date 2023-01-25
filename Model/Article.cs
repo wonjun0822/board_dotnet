@@ -8,10 +8,10 @@ namespace board_dotnet.Model
     [Table("article")]
     [PrimaryKey(nameof(id))]
     [Index(nameof(title))]
-    [Index(nameof(content))]
+    //[Index(nameof(content))]
     [Index(nameof(createId))]
     [Index(nameof(createDate))]
-    public class Article
+    public class Article // : IEquatable<Article>
     {
         public Article(string title, string content, string hashTag) 
         {
@@ -24,10 +24,10 @@ namespace board_dotnet.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long id { get; }
 
-        [Column(TypeName = "text")]
+        [Column(TypeName = "varchar(100)")]
         public string title { get; set; } = string.Empty;
 
-        [Column(TypeName = "varchar(100)")]
+        [Column(TypeName = "text")]
         public string content { get; set; } = string.Empty;
 
         [Column("view_count")]

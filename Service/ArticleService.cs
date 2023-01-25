@@ -21,6 +21,8 @@ namespace board_dotnet.Service.ArticleService
             if (article is null)
                 return null;
 
+            await _context.Comments.Where(e => e.articleId == article.id).ToListAsync();
+
             return article;
         }
 
@@ -30,7 +32,7 @@ namespace board_dotnet.Service.ArticleService
 
             await _context.SaveChangesAsync();
 
-            return await _context.Articles.();
+            return await _context.Articles.ToListAsync();
         }
 
         public async Task<Article?> UpdateArticle(long id, Article request)
