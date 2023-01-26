@@ -48,6 +48,6 @@ namespace board_dotnet.Model
         [Column("update_date")]
         public DateTime updateDate { get; private set; }
 
-        public virtual ICollection<Comment> articleComments { get; set; } = new HashSet<Comment>();
+        public virtual ICollection<Comment> articleComments { get; set; } //= new HashSet<Comment>();
     }
 }
