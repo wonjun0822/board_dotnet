@@ -4,7 +4,10 @@ using board_dotnet.Repository;
 
 using System.IO.Compression;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
+
+string connection = @"Server=rds-mysql.cvewupsq1piq.ap-northeast-2.rds.amazonaws.com,3066;User Id=wonjun;Password=ekdud0822;Database=MYSQL_DB_NET";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContextPool<AppDbContext>(options => {
+    options
+        .UseMySql(connection, ServerVersion.AutoDetect(connection))
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
