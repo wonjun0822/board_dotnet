@@ -11,10 +11,16 @@ namespace board_dotnet.Data
 
         public AppDbContext() {}
 
-        public AppDbContext(DbContextOptions options) : base(options) {}
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            string connection = @"Server=rds-mysql.cvewupsq1piq.ap-northeast-2.rds.amazonaws.com,3066;User Id=wonjun;Password=ekdud0822;Database=MYSQL_DB";
+
+            optionsBuilder.UseMySql(connection, ServerVersion.AutoDetect(connection));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

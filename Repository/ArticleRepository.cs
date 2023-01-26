@@ -17,7 +17,7 @@ namespace board_dotnet.Repository
 
         public async Task<List<Articles>?> GetArticlesFilter()
         {
-            var articles = await _context.Articles.Select(s => new Articles() { id = s.id, title = s.title, viewCount = s.viewCount }).OrderByDescending(o => o.id).ToListAsync();
+            var articles = await _context.Articles.Select(s => new Articles() { id = s.id, title = s.title, viewCount = s.viewCount }).ToListAsync();
 
             if (articles is null)
                 return null;
@@ -42,7 +42,7 @@ namespace board_dotnet.Repository
             if (article is null)
                 return null;
 
-            article.articleComments = await _context.Comments.Where(e => EF.Property<long>(e, "articleId") == article.id).ToListAsync();
+            await _context.Comments.Where(e => EF.Property<long>(e, "articleId") == article.id).ToListAsync();
 
             return article;
         }
