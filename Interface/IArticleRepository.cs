@@ -4,6 +4,7 @@ namespace board_dotnet.Interface
 {
     public interface IArticleRepository
     {
+        Task<List<Articles>?> GetArticlesFilter();
         Task<List<Article>?> GetArticles();
         Task<Article?> GetArticle(long id);
         Task<int> AddArticle(Article article);

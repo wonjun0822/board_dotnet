@@ -15,6 +15,16 @@ namespace board_dotnet.Repository
             _context = context;
         }
 
+        public async Task<List<Articles>?> GetArticlesFilter()
+        {
+            var articles = await _context.Articles.Select(s => new Articles() { id = s.id, title = s.title, viewCount = s.viewCount }).ToListAsync();
+
+            if (articles is null)
+                return null;
+
+            return articles;
+        }
+
         public async Task<List<Article>?> GetArticles()
         {
             var articles = await _context.Articles.ToListAsync();

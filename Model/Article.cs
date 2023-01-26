@@ -49,5 +49,25 @@ namespace board_dotnet.Model
         public DateTime updateDate { get; private set; }
 
         public virtual ICollection<Comment> articleComments { get; set; } = new HashSet<Comment>();
+
+        public static explicit operator Articles(Article article)
+        {
+            var response = new Articles
+            {
+                id = article.id,
+                title = article.title,
+                viewCount = article.viewCount
+            };
+
+            return response;
+        }
+    }
+
+    [NotMapped]
+    public class Articles
+    {
+        public long id { get; set; }
+        public string title { get; set; } = string.Empty;
+        public int viewCount { get; set; } = 0;
     }
 }
