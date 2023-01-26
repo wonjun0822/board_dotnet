@@ -21,7 +21,7 @@ namespace board_dotnet.Service.ArticleService
             if (article is null)
                 return null;
 
-            await _context.Comments.Where(e => e.articleId == article.id).ToListAsync();
+            await _context.Comments.Where(e => EF.Property<long>(e, "articleId") == article.id).ToListAsync();
 
             return article;
         }

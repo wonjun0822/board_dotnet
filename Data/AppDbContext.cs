@@ -23,12 +23,19 @@ namespace board_dotnet.Data
             optionsBuilder.UseMySql(connection, ServerVersion.AutoDetect(connection));
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<Article>()
                 .HasMany(b => b.articleComments)
                 .WithOne();
+
             modelBuilder.Entity<Article>()
                 .Navigation(b => b.articleComments)
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            modelBuilder.Entity<Comment>()
+                .Property<long>("articleId")
+                .HasColumnName("article_id");
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) {
