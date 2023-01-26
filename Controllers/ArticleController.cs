@@ -16,12 +16,20 @@ namespace board_dotnet.Controllers
             _articleRepository = articleRepository;
         }
 
+        [HttpGet("articlesFilter")]
+        public async Task<ActionResult<Articles>?> GetArticlesFilter()
+        {
+            var articles = await _articleRepository.GetArticlesFilter();
+
+            return Ok(articles);
+        }
+
         [HttpGet("articles")]
         public async Task<ActionResult<Article>?> GetArticles()
         {
-            var article = await _articleRepository.GetArticles();
+            var articles = await _articleRepository.GetArticles();
 
-            return Ok(article);
+            return Ok(articles);
         }
 
         [HttpGet("articles/{id}")]
