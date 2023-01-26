@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
-using board_dotnet.Service.ArticleService;
+using board_dotnet.Interface;
 
 namespace board_dotnet.Controllers
 {
@@ -10,25 +9,33 @@ namespace board_dotnet.Controllers
     [Route("api")]
     public class ArticleController : ControllerBase
     {
-        private readonly IArticleService _articleService;
+        private readonly IArticleRepository _articleRepository;
 
-        public ArticleController(IArticleService articleService)
+        public ArticleController(IArticleRepository articleRepository)
         {
-            _articleService = articleService;
+            _articleRepository = articleRepository;
+        }
+
+        [HttpGet("articles")]
+        public async Task<ActionResult<Article>?> GetArticles()
+        {
+            var article = await _articleRepository.GetArticles();
+
+            return Ok(article);
         }
 
         [HttpGet("articles/{id}")]
         public async Task<ActionResult<Article>?> GetArticle(long id)
         {
-            var article = await _articleService.GetArticle(id);
+            var article = await _articleRepository.GetArticle(id);
 
             return Ok(article);
         }
 
         [HttpPost("articles")]
-        public async Task<ActionResult<Article>> AddArticle(Article article)
+        public async Task<ActionResult<int>> AddArticle(Article article)
         {
-            var result = await _articleService.AddArticle(article);
+            var result = await _articleRepository.AddArticle(article);
 
             return Ok(result);
         }
@@ -36,7 +43,7 @@ namespace board_dotnet.Controllers
         [HttpPut("articles/{id}")]
         public async Task<ActionResult<Article>?> UpdateArticle(long id, Article request)
         {
-            var result = await _articleService.UpdateArticle(id, request);
+            var result = await _articleRepository.UpdateArticle(id, request);
 
             return Ok(result);
         }
@@ -44,7 +51,7 @@ namespace board_dotnet.Controllers
         [HttpDelete("articles/{id}")]
         public async Task<ActionResult<Article>?> DeleteArticle(long id)
         {
-            var result = await _articleService.DeleteArticle(id);
+            var result = await _articleRepository.DeleteArticle(id);
 
             return Ok(result);
         }

@@ -1,5 +1,6 @@
 using board_dotnet.Data;
-using board_dotnet.Service.ArticleService;
+using board_dotnet.Interface;
+using board_dotnet.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
 builder.Services.AddDbContext<AppDbContext>();
 
 var app = builder.Build();

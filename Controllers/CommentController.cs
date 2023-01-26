@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
-using board_dotnet.Service.ArticleService;
-using board_dotnet.Data;
+using board_dotnet.Interface;
 
 namespace board_dotnet.Controllers
 {
@@ -11,19 +9,43 @@ namespace board_dotnet.Controllers
     [Route("api")]
     public class CommentController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ICommentRepository _commentRepository;
 
-        public CommentController(AppDbContext context)
+        public CommentController(ICommentRepository commentRepository)
         {
-            _context = context;
+            _commentRepository = commentRepository;
         }
 
-        [HttpGet("comments/{id}")]
-        public async Task<ActionResult<Comment>?> GetComment(long id)
+        [HttpGet("comments/{articleId}")]
+        public async Task<ActionResult<Comment>?> GetComments(long articleId)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comments = await _commentRepository.GetComments(articleId);
 
-            return Ok(comment);
+            return Ok(comments);
+        }
+
+        [HttpPost("comments/{articleId}")]
+        public async Task<ActionResult<int>?> AddComment(long articleId, Comment comment)
+        {
+            var result = await _commentRepository.AddComment(articleId, comment);
+
+            return Ok(result);
+        }
+
+        [HttpPut("comments/{id}")]
+        public async Task<ActionResult<Comment>?> UpdateComment(long id, Comment comment)
+        {
+            var result = await _commentRepository.UpdateComment(id, comment);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("comments/{id}")]
+        public async Task<ActionResult<Comment>?> DeleteComment(long id)
+        {
+            var result = await _commentRepository.DeleteComment(id);
+
+            return Ok(result);
         }
     }
 }
