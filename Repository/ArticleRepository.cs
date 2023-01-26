@@ -1,17 +1,28 @@
 using board_dotnet.Data;
+using board_dotnet.Interface;
 using board_dotnet.Model;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace board_dotnet.Service.ArticleService
+namespace board_dotnet.Repository
 {
-    public class ArticleService : IArticleService
+    public class ArticleRepository : IArticleRepository
     {
         private readonly AppDbContext _context;
 
-        public ArticleService(AppDbContext context)
+        public ArticleRepository(AppDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<Article>?> GetArticles()
+        {
+            var articles = await _context.Articles.ToListAsync();
+
+            if (articles is null)
+                return null;
+
+            return articles;
         }
 
         public async Task<Article?> GetArticle(long id)
@@ -26,13 +37,11 @@ namespace board_dotnet.Service.ArticleService
             return article;
         }
 
-        public async Task<List<Article>> AddArticle(Article article)
+        public async Task<int> AddArticle(Article article)
         {
             _context.Articles.Add(article);
 
-            await _context.SaveChangesAsync();
-
-            return await _context.Articles.ToListAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<Article?> UpdateArticle(long id, Article request)
