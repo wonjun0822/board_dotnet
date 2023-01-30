@@ -1,6 +1,6 @@
 namespace board_dotnet.DTO
 {
-    [SwaggerExclude]
+    //[SwaggerExclude]
     public record CommentDTO {
         public long commentId { get; set; }
         public string comment { get; set; } = string.Empty;

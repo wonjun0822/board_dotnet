@@ -1,6 +1,6 @@
 namespace board_dotnet.DTO
 {
-    [SwaggerExclude]
+    //[SwaggerExclude]
     public record ArticleDTO {
         public long id { get; set; }
         public string title { get; set; } = string.Empty;
@@ -9,7 +9,6 @@ namespace board_dotnet.DTO
         public DateTime createAt { get; set; }
     }
 
-    [SwaggerExclude]
     public record ArticleDetailDTO {
         public long id { get; set; }
         public string title { get; set; } = string.Empty;

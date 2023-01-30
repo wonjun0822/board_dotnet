@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using board_dotnet.Model;
 using board_dotnet.Interface;
 using board_dotnet.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace board_dotnet.Controllers
 {
@@ -33,6 +35,7 @@ namespace board_dotnet.Controllers
             return Ok(articles);
         }
 
+        [Authorize]
         [HttpGet("articles/{id}")]
         public async Task<ActionResult<Article>?> GetArticle(long id)
         {
@@ -41,6 +44,7 @@ namespace board_dotnet.Controllers
             return Ok(article);
         }
 
+        [Authorize]
         [HttpGet("articlesFilter/{id}")]
         public async Task<ActionResult<ArticleDetailDTO>?> GetArticleFilter(long id)
         {
@@ -49,6 +53,7 @@ namespace board_dotnet.Controllers
             return Ok(article);
         }
 
+        [Authorize]
         [HttpPost("articles")]
         public async Task<ActionResult<int>> AddArticle(Article article)
         {
@@ -57,6 +62,7 @@ namespace board_dotnet.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPut("articles/{id}")]
         public async Task<ActionResult<Article>?> UpdateArticle(long id, Article request)
         {
@@ -65,6 +71,7 @@ namespace board_dotnet.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete("articles/{id}")]
         public async Task<ActionResult<Article>?> DeleteArticle(long id)
         {

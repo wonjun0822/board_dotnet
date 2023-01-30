@@ -11,23 +11,22 @@ namespace board_dotnet.Authentication;
 
 internal sealed class JwtProvider : IJwtProvider
 {
-    private readonly JwtOptions _options;
+    private readonly JwtOptions _jwtOptions;
 
-    public JwtProvider(IOptions<JwtOptions> options)
+    public JwtProvider(IOptions<JwtOptions> jwtOptions)
     {
-        _options = options.Value;
+        _jwtOptions = jwtOptions.Value;
     }
 
     public string Generate(Member member)
     {
-        var secretKey = new SymmetricSecurityKey(Convert.FromBase64String(_options.SecretKey));
+        var secretKey = new SymmetricSecurityKey(Convert.FromBase64String(_jwtOptions.SecretKey));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
         var jwtToken = new JwtSecurityToken(
-            issuer: _options.Issuer,
-            audience: _options.Audience,
+            issuer: _jwtOptions.Issuer,
+            audience: _jwtOptions.Audience,
             expires: DateTime.Now.AddDays(7),
-            //expires: DateTime.Now.AddMinutes(10),
             signingCredentials: credentials,
             claims: new Claim[] {
                 //new Claim(JwtRegisteredClaimNames.Sub, member.member_id),
@@ -35,8 +34,6 @@ internal sealed class JwtProvider : IJwtProvider
                 new Claim(ClaimTypes.Name, member.nickname)
             }
         );
-
-        //string accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }

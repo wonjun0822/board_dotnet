@@ -1,12 +1,12 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace board_dotnet.Authentication;
 
-public class JwtBearerOptionSetup : IConfigureOptions<JwtBearerOptions>
+public class JwtBearerOptionSetup : IConfigureNamedOptions<JwtBearerOptions>
 {
-    private const string SectionName = "Jwt";
     private readonly JwtOptions _jwtOptions;
 
     public JwtBearerOptionSetup(IOptions<JwtOptions> jwtOptions)
@@ -16,8 +16,14 @@ public class JwtBearerOptionSetup : IConfigureOptions<JwtBearerOptions>
 
     public void Configure(JwtBearerOptions options)
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        Configure(Options.DefaultName, options);
+    }
+
+    public void Configure(string? name, JwtBearerOptions options)
+    {
+        options.TokenValidationParameters = new()
         {
+            ValidateLifetime = true,
             ValidateAudience = true,
             ValidateIssuer = true,
             ValidateIssuerSigningKey = true,
@@ -26,5 +32,7 @@ public class JwtBearerOptionSetup : IConfigureOptions<JwtBearerOptions>
             IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(_jwtOptions.SecretKey)),
             RequireExpirationTime = true
         };
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = false;
     }
 }
