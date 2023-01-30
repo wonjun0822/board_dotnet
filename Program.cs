@@ -1,10 +1,13 @@
 using board_dotnet.Data;
 using board_dotnet.Interface;
 using board_dotnet.Repository;
+using board_dotnet.Authentication;
 
 using System.IO.Compression;
 
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,8 @@ builder.Services.AddSwaggerGen(c => {
 
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
 builder.Services.AddDbContext<AppDbContext>();
 
@@ -49,6 +54,17 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = CompressionLevel.Fastest;
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
+builder.Services.ConfigureOptions<JwtOptionSetup>();
+builder.Services.ConfigureOptions<JwtBearerOptionSetup>();
+
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("Admin", policy => policy.RequireClaim("auth", "System Admin"));
+// });
 
 var app = builder.Build();
 
