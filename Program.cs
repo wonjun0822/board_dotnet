@@ -1,6 +1,4 @@
 using board_dotnet.Data;
-using board_dotnet.Interface;
-using board_dotnet.Repository;
 using board_dotnet.Authentication;
 
 using System.IO.Compression;
@@ -8,8 +6,6 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,10 +40,7 @@ builder.Services.AddSwaggerGen(c => {
     }});
 });
 
-builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddServiceCollection(builder.Configuration);
 
 builder.Services.AddDbContext<AppDbContext>();
 
@@ -61,43 +54,8 @@ builder.WebHost.ConfigureKestrel(options => {
     });
 });
 
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-    options.Providers.Add<BrotliCompressionProvider>();
-    options.Providers.Add<GzipCompressionProvider>();
-    options.MimeTypes = new[] { "text/plain", "text/css", "application/javascript", "text/html", "application/json", "application/vnd.ms-excel" };
-});
-
-builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
-{
-    options.Level = CompressionLevel.Fastest;
-});
-
-builder.Services.Configure<GzipCompressionProviderOptions>(options =>
-{
-    options.Level = CompressionLevel.Fastest;
-});
-
-// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-// {
-//     options.TokenValidationParameters = new TokenValidationParameters
-//     {
-//         ValidateAudience = true,
-//         ValidateIssuer = true,
-//         ValidateIssuerSigningKey = true,
-//         ValidAudience = builder.Configuration.GetSection("Jwt").GetValue<string>("Audience"),
-//         ValidIssuer = builder.Configuration.GetSection("Jwt").GetValue<string>("Issuer"),
-//         IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration.GetSection("Jwt").GetValue<string>("SecretKey")!)),
-//         RequireExpirationTime = true
-//     };
-//     options.RequireHttpsMetadata = false;
-//     options.SaveToken = false;
-// });
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
-builder.Services.ConfigureOptions<JwtOptionSetup>();
 builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOptionSetup>();
 
 builder.Services.AddAuthorization(options =>
