@@ -39,6 +39,6 @@ namespace board_dotnet.Model
         [Column("update_at")]
         public DateTime updateAt { get; private set; }
 
-        public virtual Member member { get; set; }
+        public virtual Member member { get; set; } = new Member();
     }
 }

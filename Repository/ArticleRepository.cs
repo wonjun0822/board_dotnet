@@ -18,9 +18,6 @@ namespace board_dotnet.Repository
 
         public async Task<List<ArticleDTO>?> GetArticlesFilter()
         {
-<<<<<<< Updated upstream
-            var articles = await _context.Articles.Select(s => new Articles() { id = s.id, title = s.title, viewCount = s.viewCount }).ToListAsync();
-=======
             var articles = await _context.Articles.Select(
                 s => new ArticleDTO() { 
                     id = s.id, 
@@ -30,7 +27,6 @@ namespace board_dotnet.Repository
                     createAt = s.createAt
                 }
             ).OrderByDescending(o => o.id).ToListAsync();
->>>>>>> Stashed changes
 
             if (articles is null)
                 return null;
@@ -57,9 +53,6 @@ namespace board_dotnet.Repository
             if (article is null)
                 return null;
 
-<<<<<<< Updated upstream
-            await _context.Comments.Where(e => EF.Property<long>(e, "articleId") == article.id).ToListAsync();
-=======
             return article;
         }
 
@@ -86,7 +79,6 @@ namespace board_dotnet.Repository
 
             if (article is null)
                 return null;
->>>>>>> Stashed changes
 
             return article;
         }

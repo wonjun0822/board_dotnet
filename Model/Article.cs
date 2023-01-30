@@ -49,6 +49,6 @@ namespace board_dotnet.Model
 
         public virtual ICollection<Comment> articleComments { get; set; } = new HashSet<Comment>();
 
-        public virtual Member member { get; set; }
+        public virtual Member member { get; set; } = new Member();
     }
 }
