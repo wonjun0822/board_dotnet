@@ -7,7 +7,10 @@ using System.IO.Compression;
 
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
     c.DocumentFilter<SwaggerIgnoreFilter>();
+    c.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme {
+        Name = "Authorization",
+        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    {
+        new OpenApiSecurityScheme
+        {
+            Name = "Bearer",
+            In = ParameterLocation.Header,
+            Reference = new OpenApiReference
+            {
+                Id = "Bearer",
+                Type = ReferenceType.SecurityScheme
+            }
+        },
+        new List<string>()
+    }});
 });
 
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
@@ -55,16 +79,31 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     options.Level = CompressionLevel.Fastest;
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer();
+// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+// {
+//     options.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateAudience = true,
+//         ValidateIssuer = true,
+//         ValidateIssuerSigningKey = true,
+//         ValidAudience = builder.Configuration.GetSection("Jwt").GetValue<string>("Audience"),
+//         ValidIssuer = builder.Configuration.GetSection("Jwt").GetValue<string>("Issuer"),
+//         IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration.GetSection("Jwt").GetValue<string>("SecretKey")!)),
+//         RequireExpirationTime = true
+//     };
+//     options.RequireHttpsMetadata = false;
+//     options.SaveToken = false;
+// });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
 builder.Services.ConfigureOptions<JwtOptionSetup>();
-builder.Services.ConfigureOptions<JwtBearerOptionSetup>();
+builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOptionSetup>();
 
-// builder.Services.AddAuthorization(options =>
-// {
-//     options.AddPolicy("Admin", policy => policy.RequireClaim("auth", "System Admin"));
-// });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("auth", "System Admin"));
+});
 
 var app = builder.Build();
 
