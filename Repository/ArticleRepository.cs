@@ -1,4 +1,5 @@
 using board_dotnet.Data;
+using board_dotnet.DTO;
 using board_dotnet.Interface;
 using board_dotnet.Model;
 
@@ -15,9 +16,21 @@ namespace board_dotnet.Repository
             _context = context;
         }
 
-        public async Task<List<Articles>?> GetArticlesFilter()
+        public async Task<List<ArticleDTO>?> GetArticlesFilter()
         {
+<<<<<<< Updated upstream
             var articles = await _context.Articles.Select(s => new Articles() { id = s.id, title = s.title, viewCount = s.viewCount }).ToListAsync();
+=======
+            var articles = await _context.Articles.Select(
+                s => new ArticleDTO() { 
+                    id = s.id, 
+                    title = s.title, 
+                    viewCount = s.viewCount,
+                    nickname = s.member.nickname,
+                    createAt = s.createAt
+                }
+            ).OrderByDescending(o => o.id).ToListAsync();
+>>>>>>> Stashed changes
 
             if (articles is null)
                 return null;
@@ -27,7 +40,9 @@ namespace board_dotnet.Repository
 
         public async Task<List<Article>?> GetArticles()
         {
-            var articles = await _context.Articles.ToListAsync();
+            //var articles = await _context.Articles.ToListAsync();
+            var articles = await _context.Articles.Include(b => b.articleComments).ToListAsync();
+            //var articles = await _context.Articles.AsTracking().ToListAsync();
 
             if (articles is null)
                 return null;
@@ -37,12 +52,41 @@ namespace board_dotnet.Repository
 
         public async Task<Article?> GetArticle(long id)
         {
-            var article = await _context.Articles.FindAsync(id);
+            var article = await _context.Articles.Include(b => b.articleComments).Include(b => b.member).FirstOrDefaultAsync(m => m.id == id);
 
             if (article is null)
                 return null;
 
+<<<<<<< Updated upstream
             await _context.Comments.Where(e => EF.Property<long>(e, "articleId") == article.id).ToListAsync();
+=======
+            return article;
+        }
+
+        public async Task<ArticleDetailDTO?> GetArticleFilter(long id)
+        {
+            var article = await _context.Articles.Select(
+                s => new ArticleDetailDTO() {
+                    id = s.id,
+                    title = s.title,
+                    content = s.content,
+                    viewCount = s.viewCount,
+                    nickname = s.member.nickname,
+                    createAt = s.createAt,
+                    comments = s.articleComments.Select(
+                        o => new CommentDTO() { 
+                            commentId = o.id,
+                            comment = o.comment,
+                            nickname = o.member.nickname,
+                            createAt = s.createAt
+                        }
+                    ).ToList()
+                }
+            ).FirstOrDefaultAsync(m => m.id == id);
+
+            if (article is null)
+                return null;
+>>>>>>> Stashed changes
 
             return article;
         }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
 using board_dotnet.Interface;
+using board_dotnet.DTO;
 
 namespace board_dotnet.Controllers
 {
@@ -17,7 +18,7 @@ namespace board_dotnet.Controllers
         }
 
         [HttpGet("articlesFilter")]
-        public async Task<ActionResult<Articles>?> GetArticlesFilter()
+        public async Task<ActionResult<ArticleDTO>?> GetArticlesFilter()
         {
             var articles = await _articleRepository.GetArticlesFilter();
 
@@ -36,6 +37,14 @@ namespace board_dotnet.Controllers
         public async Task<ActionResult<Article>?> GetArticle(long id)
         {
             var article = await _articleRepository.GetArticle(id);
+
+            return Ok(article);
+        }
+
+        [HttpGet("articlesFilter/{id}")]
+        public async Task<ActionResult<ArticleDetailDTO>?> GetArticleFilter(long id)
+        {
+            var article = await _articleRepository.GetArticleFilter(id);
 
             return Ok(article);
         }

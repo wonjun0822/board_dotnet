@@ -6,6 +6,7 @@ namespace board_dotnet.Data
 {
     public class AppDbContext : DbContext
     {
+        public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
 
@@ -33,9 +34,29 @@ namespace board_dotnet.Data
                 .Navigation(b => b.articleComments)
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
+            // modelBuilder.Entity<Comment>()
+            //     .Property<long>("articleId")
+            //     .HasColumnName("article_id");
+
+            modelBuilder.Entity<Article>()
+                .HasOne<Member>(b => b.member)
+                .WithMany()
+                .HasForeignKey(b => b.createBy)
+                .HasPrincipalKey(b => b.member_id);
+
+            modelBuilder.Entity<Article>()
+                .Navigation(b => b.member)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
+
             modelBuilder.Entity<Comment>()
-                .Property<long>("articleId")
-                .HasColumnName("article_id");
+                .HasOne<Member>(b => b.member)
+                .WithMany()
+                .HasForeignKey(b => b.createBy)
+                .HasPrincipalKey(b => b.member_id);
+
+            modelBuilder.Entity<Comment>()
+                .Navigation(b => b.member)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) {

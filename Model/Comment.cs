@@ -8,8 +8,8 @@ namespace board_dotnet.Model
     [Table("comment")]
     [PrimaryKey(nameof(id))]
     [Index(nameof(comment))]
-    [Index(nameof(createId))]
-    [Index(nameof(createDate))]
+    [Index(nameof(createBy))]
+    [Index(nameof(createAt))]
     public class Comment
     {
         public Comment(string comment) 
@@ -21,19 +21,24 @@ namespace board_dotnet.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long id { get; }
 
+        [Column("article_id")]
+        public long articleId { get; set; }
+
         [Column(TypeName = "varchar(200)")]
         public string comment { get; set; } = string.Empty;
 
-        [Column("create_id", TypeName = "varchar(50)")]
-        public string createId { get; private set; } = string.Empty;
+        [Column("create_by", TypeName = "varchar(50)")]
+        public string createBy { get; private set; } = string.Empty;
 
-        [Column("create_date")]
-        public DateTime createDate { get; private set; }
+        [Column("create_at")]
+        public DateTime createAt { get; private set; }
 
-        [Column("update_id", TypeName = "varchar(100)")]
-        public string updateId { get; private set; } = string.Empty;
+        [Column("update_by", TypeName = "varchar(100)")]
+        public string updateBy { get; private set; } = string.Empty;
 
-        [Column("update_date")]
-        public DateTime updateDate { get; private set; }
+        [Column("update_at")]
+        public DateTime updateAt { get; private set; }
+
+        public virtual Member member { get; set; }
     }
 }
