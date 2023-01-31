@@ -1,8 +1,8 @@
 using board_dotnet.JWT;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +56,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim("auth", "System Admin"));
 });
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

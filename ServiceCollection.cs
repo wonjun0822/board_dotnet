@@ -6,6 +6,7 @@ using System.IO.Compression;
 
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using board_dotnet.Interceptors;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -18,20 +19,27 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddServiceCollection(this IServiceCollection services, IConfiguration config)
         {
             _services = services;
-            
+
             AddDbContextPool();
-            
+                        
+            AddServiceCollection();
+
             AddConfigGroup(config);
             AddCompression(config);
-            
-            AddScopeGroup();
 
             return _services;
         }
 
         private static void AddDbContextPool()
         {
-            _services?.AddDbContextPool<AppDbContext>(o => o.UseMySql(connection, ServerVersion.AutoDetect(connection)));
+            //_services?.AddDbContextPool<AppDbContext>(o => o.UseMySql(connection, ServerVersion.AutoDetect(connection)));
+
+            _services?.AddDbContextPool<AppDbContext>((serviceProvider, contextBuilder) => {
+                var auditingEntitiesInterceptor = serviceProvider.GetService<AuditingEntitiesInterceptor>()!;
+
+                contextBuilder.UseMySql(connection, ServerVersion.AutoDetect(connection));
+                contextBuilder.AddInterceptors(auditingEntitiesInterceptor);
+            });
         }
 
         private static void AddConfigGroup(IConfiguration config)
@@ -60,11 +68,15 @@ namespace Microsoft.Extensions.DependencyInjection
             });
         }
 
-        private static void AddScopeGroup()
+        private static void AddServiceCollection()
         {
+            _services?.AddSingleton<AuditingEntitiesInterceptor>();
+            _services?.AddSingleton<IUserResolverProvider, UserResolverProvider>();
+
             _services?.AddScoped<IArticleRepository, ArticleRepository>();
             _services?.AddScoped<ICommentRepository, CommentRepository>();
             _services?.AddScoped<IMemberRepository, MemberRepository>();
+
             _services?.AddScoped<IJwtProvider, JwtProvider>();
         }
     }
