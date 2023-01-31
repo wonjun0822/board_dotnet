@@ -30,6 +30,8 @@ namespace board_dotnet.Controllers
             string token = _jwtProvider.Generate(member);
 
             return Ok(token);
-        } 
+        }
+
+        
     }
 }

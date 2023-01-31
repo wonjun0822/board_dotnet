@@ -7,8 +7,8 @@ namespace board_dotnet.Repository
     {
         Task<List<ArticleDTO>?> GetArticles();
         Task<ArticleDetailDTO?> GetArticle(long id);
-        Task<int> AddArticle(Article article);
+        Task<int> AddArticle(ArticleWriteDTO article);
         Task<Article?> UpdateArticle(long id, Article request);
-        Task<List<Article>?> DeleteArticle(long id);
+        Task<Article?> DeleteArticle(long id);
     }
 }

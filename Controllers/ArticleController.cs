@@ -37,7 +37,7 @@ namespace board_dotnet.Controllers
 
         [Authorize]
         [HttpPost("articles")]
-        public async Task<ActionResult<int>> AddArticle(Article article)
+        public async Task<ActionResult<int>> AddArticle([FromBody] ArticleWriteDTO article)
         {
             var result = await _articleRepository.AddArticle(article);
 

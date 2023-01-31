@@ -12,11 +12,10 @@ namespace board_dotnet.Model
     [Index(nameof(createAt))]
     public class Article // : IEquatable<Article>
     {
-        public Article(string title, string content, string hashTag) 
+        public Article(string title, string content) 
         {
             this.title = title;
             this.content = content;
-            this.hashTag = hashTag;
         }
 
         [Key]
