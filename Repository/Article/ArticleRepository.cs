@@ -15,17 +15,21 @@ namespace board_dotnet.Repository
             _context = context;
         }
 
-        public async Task<List<ArticleDTO>?> GetArticlesFilter()
+        public async Task<List<ArticleDTO>?> GetArticles()
         {
-            var articles = await _context.Articles.Select(
-                s => new ArticleDTO() { 
-                    id = s.id, 
-                    title = s.title, 
-                    viewCount = s.viewCount,
-                    nickname = s.member.nickname,
-                    createAt = s.createAt
-                }
-            ).OrderByDescending(o => o.id).ToListAsync();
+            // var articles = await _context.Articles.Include(b => b.articleComments).ToListAsync();
+            var articles = await _context.Articles
+                .Select(
+                    s => new ArticleDTO() { 
+                        id = s.id, 
+                        title = s.title, 
+                        viewCount = s.viewCount,
+                        nickname = s.member.nickname,
+                        createAt = s.createAt
+                    }
+                )
+                .OrderByDescending(o => o.id)
+                .ToListAsync();
 
             if (articles is null)
                 return null;
@@ -33,30 +37,9 @@ namespace board_dotnet.Repository
             return articles;
         }
 
-        public async Task<List<Article>?> GetArticles()
+        public async Task<ArticleDetailDTO?> GetArticle(long id)
         {
-            //var articles = await _context.Articles.ToListAsync();
-            var articles = await _context.Articles.Include(b => b.articleComments).ToListAsync();
-            //var articles = await _context.Articles.AsTracking().ToListAsync();
-
-            if (articles is null)
-                return null;
-
-            return articles;
-        }
-
-        public async Task<Article?> GetArticle(long id)
-        {
-            var article = await _context.Articles.Include(b => b.articleComments).Include(b => b.member).FirstOrDefaultAsync(m => m.id == id);
-
-            if (article is null)
-                return null;
-
-            return article;
-        }
-
-        public async Task<ArticleDetailDTO?> GetArticleFilter(long id)
-        {
+            //var article = await _context.Articles.Include(b => b.articleComments).Include(b => b.member).FirstOrDefaultAsync(m => m.id == id);
             var article = await _context.Articles.Select(
                 s => new ArticleDetailDTO() {
                     id = s.id,

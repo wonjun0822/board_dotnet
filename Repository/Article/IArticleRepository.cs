@@ -5,10 +5,8 @@ namespace board_dotnet.Repository
 {
     public interface IArticleRepository
     {
-        Task<List<ArticleDTO>?> GetArticlesFilter();
-        Task<List<Article>?> GetArticles();
-        Task<Article?> GetArticle(long id);
-        Task<ArticleDetailDTO?> GetArticleFilter(long id);
+        Task<List<ArticleDTO>?> GetArticles();
+        Task<ArticleDetailDTO?> GetArticle(long id);
         Task<int> AddArticle(Article article);
         Task<Article?> UpdateArticle(long id, Article request);
         Task<List<Article>?> DeleteArticle(long id);

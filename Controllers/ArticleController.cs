@@ -18,16 +18,8 @@ namespace board_dotnet.Controllers
             _articleRepository = articleRepository;
         }
 
-        [HttpGet("articlesFilter")]
-        public async Task<ActionResult<ArticleDTO>?> GetArticlesFilter()
-        {
-            var articles = await _articleRepository.GetArticlesFilter();
-
-            return Ok(articles);
-        }
-
         [HttpGet("articles")]
-        public async Task<ActionResult<Article>?> GetArticles()
+        public async Task<ActionResult<ArticleDTO>?> GetArticles()
         {
             var articles = await _articleRepository.GetArticles();
 
@@ -36,18 +28,9 @@ namespace board_dotnet.Controllers
 
         [Authorize]
         [HttpGet("articles/{id}")]
-        public async Task<ActionResult<Article>?> GetArticle(long id)
+        public async Task<ActionResult<ArticleDetailDTO>?> GetArticle(long id)
         {
             var article = await _articleRepository.GetArticle(id);
-
-            return Ok(article);
-        }
-
-        [Authorize]
-        [HttpGet("articlesFilter/{id}")]
-        public async Task<ActionResult<ArticleDetailDTO>?> GetArticleFilter(long id)
-        {
-            var article = await _articleRepository.GetArticleFilter(id);
 
             return Ok(article);
         }
