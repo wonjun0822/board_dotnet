@@ -1,6 +1,6 @@
 namespace board_dotnet.DTO
 {
-    [SwaggerExclude]
+    //[SwaggerExclude]
     public record MemberDTO {
         public string nickname { get; set; } = string.Empty;
     }

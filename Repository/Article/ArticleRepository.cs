@@ -1,5 +1,6 @@
 using board_dotnet.Data;
 using board_dotnet.DTO;
+using board_dotnet.JWT;
 using board_dotnet.Model;
 
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,12 @@ namespace board_dotnet.Repository
     public class ArticleRepository : IArticleRepository
     {
         private readonly AppDbContext _context;
+        private readonly IUserResolverProvider _userResolverProvider;
 
-        public ArticleRepository(AppDbContext context)
+        public ArticleRepository(AppDbContext context, IUserResolverProvider userResolverProvider)
         {
             _context = context;
+            _userResolverProvider = userResolverProvider;
         }
 
         public async Task<List<ArticleDTO>?> GetArticles()
@@ -65,8 +68,12 @@ namespace board_dotnet.Repository
             return article;
         }
 
-        public async Task<int> AddArticle(Article article)
+        public async Task<int> AddArticle(ArticleWriteDTO request)
         {
+            var article = new Article(request.title, request.content);
+
+            article.member = await _context.Members.Where(x => x.member_id == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+
             _context.Articles.Add(article);
 
             return await _context.SaveChangesAsync();
@@ -81,23 +88,24 @@ namespace board_dotnet.Repository
 
             article.title = request.title;
             article.content = request.content;
-            article.hashTag = request.hashTag;
-            
+
             await _context.SaveChangesAsync();
 
             return article;
         }
 
-        public async Task<List<Article>?> DeleteArticle(long id)
+        public async Task<Article?> DeleteArticle(long id)
         {
-            var article = await _context.Articles.FindAsync(id);
+            var article = await _context.Articles.Where(x => x.id == id).FirstOrDefaultAsync();
 
             if (article is null)
                 return null;
-                
+
             _context.Articles.Remove(article);
 
-            return await _context.Articles.ToListAsync();
+            await _context.SaveChangesAsync();
+
+            return article;
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace board_dotnet.Model
 {
-    [SwaggerExclude]
+    //[SwaggerExclude]
     [Table("member")]
     [PrimaryKey(nameof(member_id))]
     public class Member
