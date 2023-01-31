@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
-using board_dotnet.Interface;
+using board_dotnet.Repository;
 using board_dotnet.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace board_dotnet.Controllers
 {

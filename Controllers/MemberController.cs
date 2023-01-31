@@ -1,5 +1,7 @@
 using board_dotnet.DTO;
-using board_dotnet.Interface;
+using board_dotnet.Repository;
+using board_dotnet.JWT;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace board_dotnet.Controllers

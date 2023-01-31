@@ -1,11 +1,11 @@
-using board_dotnet.Authentication;
-using board_dotnet.Interface;
+using board_dotnet.JWT;
 using board_dotnet.Repository;
+using board_dotnet.Data;
 
 using System.IO.Compression;
 
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -13,9 +13,13 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         private static IServiceCollection? _services;
 
+        private static readonly string connection = @"Server=rds-mysql.cvewupsq1piq.ap-northeast-2.rds.amazonaws.com,3066;User Id=wonjun;Password=ekdud0822;Database=MYSQL_DB_NET";
+
         public static IServiceCollection AddServiceCollection(this IServiceCollection services, IConfiguration config)
         {
             _services = services;
+            
+            AddDbContextPool();
             
             AddConfigGroup(config);
             AddCompression(config);
@@ -23,6 +27,11 @@ namespace Microsoft.Extensions.DependencyInjection
             AddScopeGroup();
 
             return _services;
+        }
+
+        private static void AddDbContextPool()
+        {
+            _services?.AddDbContextPool<AppDbContext>(o => o.UseMySql(connection, ServerVersion.AutoDetect(connection)));
         }
 
         private static void AddConfigGroup(IConfiguration config)

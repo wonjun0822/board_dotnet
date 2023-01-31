@@ -1,9 +1,5 @@
-using board_dotnet.Data;
-using board_dotnet.Authentication;
+using board_dotnet.JWT;
 
-using System.IO.Compression;
-
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
@@ -11,8 +7,8 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
@@ -41,8 +37,6 @@ builder.Services.AddSwaggerGen(c => {
 });
 
 builder.Services.AddServiceCollection(builder.Configuration);
-
-builder.Services.AddDbContext<AppDbContext>();
 
 builder.WebHost.ConfigureKestrel(options => {
     options.ListenAnyIP(5000, (opt) => {

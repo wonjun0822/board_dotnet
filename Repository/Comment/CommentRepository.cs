@@ -1,5 +1,4 @@
 using board_dotnet.Data;
-using board_dotnet.Interface;
 using board_dotnet.Model;
 
 using Microsoft.EntityFrameworkCore;

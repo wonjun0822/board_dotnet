@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
-using board_dotnet.Interface;
+using board_dotnet.Repository;
 
 namespace board_dotnet.Controllers
 {

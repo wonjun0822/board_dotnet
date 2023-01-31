@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 
-namespace board_dotnet.Authentication;
+namespace board_dotnet.JWT;
 
 public class JwtOptionSetup : IConfigureOptions<JwtOptions>
 {

@@ -1,7 +1,7 @@
 using board_dotnet.Model;
 using board_dotnet.DTO;
 
-namespace board_dotnet.Interface
+namespace board_dotnet.Repository
 {
     public interface IArticleRepository
     {

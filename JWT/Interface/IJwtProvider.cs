@@ -1,6 +1,6 @@
 using board_dotnet.Model;
 
-namespace board_dotnet.Interface
+namespace board_dotnet.JWT
 {
     public interface IJwtProvider
     {

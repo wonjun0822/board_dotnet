@@ -4,10 +4,9 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 
-using board_dotnet.Interface;
 using board_dotnet.Model;
 
-namespace board_dotnet.Authentication;
+namespace board_dotnet.JWT;
 
 internal sealed class JwtProvider : IJwtProvider
 {
