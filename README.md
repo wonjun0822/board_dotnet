@@ -1,4 +1,4 @@
 # board_dotnet
  - .Net Core 7
  - EF Core 7
- - MySQL
+ - MySQL 8.0.28 (Amazon RDS)
