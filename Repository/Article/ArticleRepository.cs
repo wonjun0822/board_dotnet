@@ -51,29 +51,52 @@ namespace board_dotnet.Repository
             {
                 //var article = await _context.Articles.Include(b => b.articleComments).Include(b => b.member).FirstOrDefaultAsync(m => m.id == id);
 
-                if (await _context.Articles.FirstOrDefaultAsync(x => x.id == id) == null)
+                var article = await _context.Articles.Where(x => x.id == id).FirstOrDefaultAsync();
+
+                if (article is null)
                     return null;
 
-                var article = await _context.Articles.Select(
-                    s => new ArticleDetailDTO() {
-                        id = s.id,
-                        title = s.title,
-                        content = s.content,
-                        viewCount = s.viewCount,
-                        nickname = s.member.nickname,
-                        createAt = s.createAt,
-                        comments = s.articleComments.Select(
-                            o => new CommentDTO() { 
-                                commentId = o.id,
-                                comment = o.comment,
-                                nickname = o.member.nickname,
-                                createAt = s.createAt
-                            }
-                        ).ToList()
-                    }
-                ).FirstOrDefaultAsync(m => m.id == id);
+                article.viewCount = article.viewCount + 1;
 
-                return article;
+                await _context.SaveChangesAsync();
+
+                var articleDetail = new ArticleDetailDTO() {
+                    id = article.id,
+                    title = article.title,
+                    content = article.content,
+                    viewCount = article.viewCount,
+                    nickname = article.member.nickname,
+                    createAt = article.createAt,
+                    comments = article.articleComments.Select(
+                        o => new CommentDTO() { 
+                            commentId = o.id,
+                            comment = o.comment,
+                            nickname = o.member.nickname,
+                            createAt = article.createAt
+                        }
+                    ).ToList()
+                };
+
+                // var article = await _context.Articles.Select(
+                //     s => new ArticleDetailDTO() {
+                //         id = s.id,
+                //         title = s.title,
+                //         content = s.content,
+                //         viewCount = s.viewCount,
+                //         nickname = s.member.nickname,
+                //         createAt = s.createAt,
+                //         comments = s.articleComments.Select(
+                //             o => new CommentDTO() { 
+                //                 commentId = o.id,
+                //                 comment = o.comment,
+                //                 nickname = o.member.nickname,
+                //                 createAt = s.createAt
+                //             }
+                //         ).ToList()
+                //     }
+                // ).FirstOrDefaultAsync(m => m.id == id);
+
+                return articleDetail;
             }
 
             catch

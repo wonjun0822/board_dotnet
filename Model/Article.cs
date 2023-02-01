@@ -29,7 +29,7 @@ namespace board_dotnet.Model
         public string content { get; set; } = string.Empty;
 
         [Column("view_count")]
-        public int viewCount { get; private set; } = 0;
+        public int viewCount { get; set; } = 0;
 
         [Column("hash_tag", TypeName = "varchar(100)")]
         public string? hashTag { get; set; }
