@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
 using board_dotnet.Repository;
+using board_dotnet.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace board_dotnet.Controllers
 {
@@ -16,36 +18,81 @@ namespace board_dotnet.Controllers
             _commentRepository = commentRepository;
         }
 
+        [Authorize]
         [HttpGet("comments/{articleId}")]
-        public async Task<ActionResult<Comment>?> GetComments(long articleId)
+        public async Task<ActionResult<CommentDTO>?> GetComments(long articleId)
         {
-            var comments = await _commentRepository.GetComments(articleId);
+            try
+            {
+                var comments = await _commentRepository.GetComments(articleId);
 
-            return Ok(comments);
+                return Ok(comments);
+            }
+
+            catch
+            {
+                return Problem("댓글 조회 중 오류가 발생했습니다.");
+            }
         }
 
+        [Authorize]
         [HttpPost("comments/{articleId}")]
-        public async Task<ActionResult<int>?> AddComment(long articleId, Comment comment)
+        public async Task<ActionResult<int>?> AddComment(long articleId, CommentWriteDTO request)
         {
-            var result = await _commentRepository.AddComment(articleId, comment);
+            try
+            {
+                var result = await _commentRepository.AddComment(articleId, request);
 
-            return Ok(result);
+                if (result == null)
+                    return NotFound("댓글을 찾을 수 없습니다.");
+
+                return StatusCode(201, result);
+            }
+
+            catch
+            {
+                return Problem("댓글 추가 중 오류가 발생했습니다.");
+            }
         }
 
-        [HttpPut("comments/{id}")]
-        public async Task<ActionResult<Comment>?> UpdateComment(long id, Comment comment)
+        [Authorize]
+        [HttpPut("comments/{commentId}")]
+        public async Task<ActionResult<Comment>?> UpdateComment(long commentId, CommentWriteDTO comment)
         {
-            var result = await _commentRepository.UpdateComment(id, comment);
+            try
+            {
+                var result = await _commentRepository.UpdateComment(commentId, comment);
 
-            return Ok(result);
+                 if (result == null)
+                    return NotFound("댓글을 찾을 수 없습니다.");
+
+                return StatusCode(201, result);
+            }
+
+            catch
+            {
+                return Problem("댓글 업데이트 중 오류가 발생했습니다.");
+            }
         }
 
-        [HttpDelete("comments/{id}")]
-        public async Task<ActionResult<Comment>?> DeleteComment(long id)
+        [Authorize]
+        [HttpDelete("comments/{commentId}")]
+        public async Task<ActionResult<Comment>?> DeleteComment(long commentId)
         {
-            var result = await _commentRepository.DeleteComment(id);
+            try
+            {
+                var result = await _commentRepository.DeleteComment(commentId);
 
-            return Ok(result);
+                if (result == null)
+                    return NotFound("댓글을 찾을 수 없습니다.");
+
+                return Ok(result);
+            }
+
+            catch
+            {
+                return Problem("댓글 삭제 중 오류가 발생했습니다.");
+            }
         }
     }
 }

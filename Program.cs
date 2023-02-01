@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen(c => {
         Name = "Authorization",
         Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer"
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement {
@@ -52,10 +52,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOptionSetup>();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin", policy => policy.RequireClaim("auth", "System Admin"));
-});
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("Admin", policy => policy.RequireClaim("auth", "System Admin"));
+// });
 
 builder.Services.AddHttpContextAccessor();
 

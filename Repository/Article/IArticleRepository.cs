@@ -1,5 +1,6 @@
-using board_dotnet.Model;
 using board_dotnet.DTO;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace board_dotnet.Repository
 {
@@ -7,8 +8,8 @@ namespace board_dotnet.Repository
     {
         Task<List<ArticleDTO>?> GetArticles();
         Task<ArticleDetailDTO?> GetArticle(long id);
-        Task<int> AddArticle(ArticleWriteDTO article);
-        Task<Article?> UpdateArticle(long id, Article request);
-        Task<Article?> DeleteArticle(long id);
+        Task<ArticleDetailDTO> AddArticle(ArticleWriteDTO article);
+        Task<ArticleDetailDTO?> UpdateArticle(long id, ArticleWriteDTO request);
+        Task<EntityState?> DeleteArticle(long id);
     }
 }

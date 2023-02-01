@@ -12,8 +12,9 @@ namespace board_dotnet.Model
     [Index(nameof(createAt))]
     public class Comment
     {
-        public Comment(string comment) 
+        public Comment(long articleId, string comment) 
         {
+            this.articleId = articleId;
             this.comment = comment;
         }
 

@@ -4,6 +4,7 @@ using board_dotnet.Model;
 using board_dotnet.Repository;
 using board_dotnet.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace board_dotnet.Controllers
 {
@@ -21,45 +22,97 @@ namespace board_dotnet.Controllers
         [HttpGet("articles")]
         public async Task<ActionResult<ArticleDTO>?> GetArticles()
         {
-            var articles = await _articleRepository.GetArticles();
+            try
+            {
+                var articles = await _articleRepository.GetArticles();
 
-            return Ok(articles);
+                return Ok(articles);
+            }
+
+            catch
+            {
+                return Problem("게시글 목록 중 오류가 발생했습니다.");
+            }
         }
 
         [Authorize]
         [HttpGet("articles/{id}")]
         public async Task<ActionResult<ArticleDetailDTO>?> GetArticle(long id)
         {
-            var article = await _articleRepository.GetArticle(id);
+            try
+            {
+                var article = await _articleRepository.GetArticle(id);
 
-            return Ok(article);
+                if (article == null)
+                    return NotFound("게시글을 찾을 수 없습니다.");
+
+                return Ok(article);
+            }
+
+            catch
+            {
+                return Problem("게시글 조회 중 오류가 발생했습니다.");
+            }
         }
 
         [Authorize]
         [HttpPost("articles")]
-        public async Task<ActionResult<int>> AddArticle([FromBody] ArticleWriteDTO article)
+        public async Task<ActionResult<ArticleDetailDTO>?> AddArticle([FromBody] ArticleWriteDTO article)
         {
-            var result = await _articleRepository.AddArticle(article);
+            try
+            {
+                var result = await _articleRepository.AddArticle(article);
 
-            return Ok(result);
+                if (result == null)
+                    return NotFound("게시글을 찾을 수 없습니다.");
+
+                return StatusCode(201, result);
+            }
+
+            catch
+            {
+                return Problem("게시글 추가 중 오류가 발생했습니다.");
+            }
         }
 
         [Authorize]
         [HttpPut("articles/{id}")]
-        public async Task<ActionResult<Article>?> UpdateArticle(long id, Article request)
+        public async Task<ActionResult<ArticleDetailDTO>?> UpdateArticle(long id, ArticleWriteDTO request)
         {
-            var result = await _articleRepository.UpdateArticle(id, request);
+            try
+            {
+                var result = await _articleRepository.UpdateArticle(id, request);
 
-            return Ok(result);
+                if (result == null)
+                    return NotFound("게시글을 찾을 수 없습니다.");
+
+                return StatusCode(201, result);
+            }
+
+            catch
+            {
+                return Problem("게시글 업데이트 중 오류가 발생했습니다.");    
+            }
         }
 
         [Authorize]
         [HttpDelete("articles/{id}")]
-        public async Task<ActionResult<Article>?> DeleteArticle(long id)
+        public async Task<ActionResult> DeleteArticle(long id)
         {
-            var result = await _articleRepository.DeleteArticle(id);
+            try
+            {
+                var result = await _articleRepository.DeleteArticle(id);
 
-            return Ok(result);
+                if (result == null)
+                    return NotFound("게시글을 찾을 수 없습니다.");
+
+                return Ok();
+            }
+
+            catch
+            {
+                return Problem("게시글 삭제 중 오류가 발생했습니다.");
+            }
         }
     }
 }

@@ -1,12 +1,14 @@
-using board_dotnet.Model;
+using board_dotnet.DTO;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace board_dotnet.Repository
 {
     public interface ICommentRepository
     {
-        Task<List<Comment>?> GetComments(long articleId);
-        Task<int> AddComment(long articleId, Comment comment);
-        Task<Comment?> UpdateComment(long commentId, Comment request);
-        Task<List<Comment>?> DeleteComment(long commentId);
+        Task<List<CommentDTO>?> GetComments(long articleId);
+        Task<List<CommentDTO>?> AddComment(long articleId, CommentWriteDTO request);
+        Task<List<CommentDTO>?> UpdateComment(long commentId, CommentWriteDTO request);
+        Task<EntityState?> DeleteComment(long commentId);
     }
 }
