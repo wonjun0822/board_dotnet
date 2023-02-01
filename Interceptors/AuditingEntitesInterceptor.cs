@@ -35,8 +35,11 @@ public sealed class AuditingEntitiesInterceptor : SaveChangesInterceptor
         });
 
         dbContext.ChangeTracker.Entries().Where(x => x.State == EntityState.Added || x.State == EntityState.Modified).ToList().ForEach(e => {
-            e.Property("updateBy").CurrentValue = _userResolverProvider.GetById();
-            e.Property("updateAt").CurrentValue = DateTime.Now;
+            if (e.Property("viewCount") == null || e.Property("viewCount").OriginalValue == e.Property("viewCount").CurrentValue)
+            {
+                e.Property("updateBy").CurrentValue = _userResolverProvider.GetById();
+                e.Property("updateAt").CurrentValue = DateTime.Now;
+            }
         });
 
         return base.SavingChangesAsync(
