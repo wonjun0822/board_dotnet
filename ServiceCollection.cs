@@ -70,6 +70,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void AddServiceCollection()
         {
+            // Singleton - 서비스 시작 시 생성되어 종료될때까지 오직 1개만 존재
+            // Scoped - Request 요청부터 Response 응답까지 유지 / 연결 된 클라이언트의 수만큼 존재하게 될 수 있음
+            // Transient - 서비스 요청시마다 생성
             _services?.AddSingleton<AuditingEntitiesInterceptor>();
             _services?.AddSingleton<IUserResolverProvider, UserResolverProvider>();
 
