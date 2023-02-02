@@ -87,6 +87,9 @@ namespace board_dotnet.Controllers
             }
         }
 
+        /// <summary>
+        /// 댓글 수정
+        /// </summary>
         /// <remarks>
         /// Sample request:
         ///
@@ -120,6 +123,9 @@ namespace board_dotnet.Controllers
             }
         }
 
+        /// <summary>
+        /// 댓글 삭제
+        /// </summary>
         /// <remarks>
         /// Sample request:
         ///
