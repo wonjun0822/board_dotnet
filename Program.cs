@@ -38,15 +38,15 @@ builder.Services.AddSwaggerGen(c => {
 
 builder.Services.AddServiceCollection(builder.Configuration);
 
-builder.WebHost.ConfigureKestrel(options => {
-    options.ListenAnyIP(5000, (opt) => {
-        opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
-    });
-    options.ListenAnyIP(5001, (opt) => {
-        opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
-        opt.UseHttps();
-    });
-});
+// builder.WebHost.ConfigureKestrel(options => {
+//     options.ListenAnyIP(5000, (opt) => {
+//         opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+//     });
+//     options.ListenAnyIP(5001, (opt) => {
+//         opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+//         opt.UseHttps();
+//     });
+// });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
@@ -62,15 +62,18 @@ builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseResponseCompression();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
