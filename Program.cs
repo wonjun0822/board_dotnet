@@ -38,15 +38,15 @@ builder.Services.AddSwaggerGen(c => {
 
 builder.Services.AddServiceCollection(builder.Configuration);
 
-builder.WebHost.ConfigureKestrel(options => {
-    options.ListenAnyIP(80, (opt) => {
-        opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
-    });
-    options.ListenAnyIP(443, (opt) => {
-        opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
-        opt.UseHttps();
-    });
-});
+// builder.WebHost.ConfigureKestrel(options => {
+//     options.ListenAnyIP(80, (opt) => {
+//         opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+//     });
+//     options.ListenAnyIP(443, (opt) => {
+//         opt.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+//         opt.UseHttps();
+//     });
+// });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
