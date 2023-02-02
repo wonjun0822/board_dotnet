@@ -6,7 +6,7 @@ namespace board_dotnet.DTO
         public string content { get; set; } = string.Empty;
         public int viewCount { get; set; } = 0;
         public string nickname { get; set; } = string.Empty;
-        public DateTime createAt { get; set; }
+        public DateTime updateAt { get; set; }
 
         public virtual ICollection<CommentDTO> comments { get; set; } = new HashSet<CommentDTO>();
     }

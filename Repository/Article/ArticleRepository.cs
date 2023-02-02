@@ -5,6 +5,8 @@ using board_dotnet.Model;
 
 using Microsoft.EntityFrameworkCore;
 
+using MR.AspNetCore.Pagination;
+
 namespace board_dotnet.Repository
 {
     public class ArticleRepository : IArticleRepository
@@ -12,31 +14,79 @@ namespace board_dotnet.Repository
         private readonly AppDbContext _context;
         private readonly IUserResolverProvider _userResolverProvider;
 
-        public ArticleRepository(AppDbContext context, IUserResolverProvider userResolverProvider)
+        private readonly IPaginationService _pagnationService;
+
+        public ArticleRepository(AppDbContext context, IUserResolverProvider userResolverProvider, IPaginationService paginationService)
         {
             _context = context;
+
             _userResolverProvider = userResolverProvider;
+            _pagnationService = paginationService;
         }
 
-        public async Task<List<ArticleDTO>?> GetArticles()
+        public async Task<OffsetDTO<List<ArticleDTO>?>?> GetArticlesOffset(int pageIndex, int pageSize)
         {
             try
             {
                 // var articles = await _context.Articles.Include(b => b.articleComments).ToListAsync();
                 var articles = await _context.Articles
+                    .AsNoTracking()
                     .Select(
                         s => new ArticleDTO() { 
                             id = s.id, 
                             title = s.title, 
                             viewCount = s.viewCount,
                             nickname = s.member.nickname,
-                            createAt = s.createAt
+                            updateAt = s.updateAt
                         }
                     )
                     .OrderByDescending(o => o.id)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
                     .ToListAsync();
 
-                return articles;
+                if (articles == null)
+                    return null;
+                    
+                var totalCount = await _context.Articles.CountAsync();
+
+                return new OffsetDTO<List<ArticleDTO>?>(articles, pageIndex, pageSize, (int)Math.Ceiling(((double)totalCount / pageSize)));
+            }
+
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<CursorDTO<List<ArticleDTO>?>?> GetArticlesCursor(long cursor)
+        {
+            try
+            {
+                var articles = await _context.Articles
+                    .AsNoTracking()
+                    .Select(
+                        s => new ArticleDTO() { 
+                            id = s.id, 
+                            title = s.title, 
+                            viewCount = s.viewCount,
+                            nickname = s.member.nickname,
+                            updateAt = s.updateAt
+                        }
+                    )
+                    .OrderByDescending(o => o.id)
+                    .Where(x => cursor == 0 ? true : x.id < cursor)
+                    .Take(20)
+                    .ToListAsync();
+
+                if (articles == null)
+                    return null;
+
+                cursor = articles.Select(x => (int)x.id).LastOrDefault();
+
+                bool lastPage = !(await _context.Articles.Where(x => x.id < cursor).AnyAsync());
+
+                return new CursorDTO<List<ArticleDTO>?>(articles, cursor, lastPage);
             }
 
             catch
@@ -66,7 +116,7 @@ namespace board_dotnet.Repository
                     content = article.content,
                     viewCount = article.viewCount,
                     nickname = article.member.nickname,
-                    createAt = article.createAt,
+                    updateAt = article.updateAt,
                     comments = article.articleComments.Select(
                         o => new CommentDTO() { 
                             commentId = o.id,
@@ -74,7 +124,7 @@ namespace board_dotnet.Repository
                             nickname = o.member.nickname,
                             createAt = article.createAt
                         }
-                    ).ToList()
+                    ).OrderByDescending(o => o.commentId).ToList()
                 };
 
                 // var article = await _context.Articles.Select(

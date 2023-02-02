@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -34,6 +36,10 @@ builder.Services.AddSwaggerGen(c => {
         },
         new List<string>()
     }});
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddServiceCollection(builder.Configuration);
@@ -58,6 +64,7 @@ builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOpti
 // });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddPagination();
 
 var app = builder.Build();
 

@@ -18,13 +18,29 @@ namespace board_dotnet.Controllers
             _commentRepository = commentRepository;
         }
 
+        /// <summary>
+        /// 게시글 댓글 조회
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/comments/6
+        ///
+        /// </remarks>
+        /// <response code="200">게시글 댓글 목록 Response</response>
+        /// <response code="404">게시글 댓글 목록을 찾을 수 없음</response>
+        /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpGet("comments/{articleId}")]
+        [Produces("application/json")]
         public async Task<ActionResult<CommentDTO>?> GetComments(long articleId)
         {
             try
             {
                 var comments = await _commentRepository.GetComments(articleId);
+
+                if (comments == null)
+                    return NotFound("게시글을 찾을 수 없습니다.");
 
                 return Ok(comments);
             }
@@ -35,8 +51,24 @@ namespace board_dotnet.Controllers
             }
         }
 
+        /// <summary>
+        /// 게시글 댓글 추가
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/comments/6
+        ///     {
+        ///        "comment": "댓글",
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">게시글 댓글 목록 Response</response>
+        /// <response code="404">댓글을 추가 할 게시글을 찾을 수 없음</response>
+        /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpPost("comments/{articleId}")]
+        [Produces("application/json")]
         public async Task<ActionResult<int>?> AddComment(long articleId, CommentWriteDTO request)
         {
             try
@@ -44,7 +76,7 @@ namespace board_dotnet.Controllers
                 var result = await _commentRepository.AddComment(articleId, request);
 
                 if (result == null)
-                    return NotFound("댓글을 찾을 수 없습니다.");
+                    return NotFound("댓글을 추가 할 게시글을 찾을 수 없습니다.");
 
                 return StatusCode(201, result);
             }
@@ -55,8 +87,21 @@ namespace board_dotnet.Controllers
             }
         }
 
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT /api/comments/131
+        ///     {
+        ///        "comment": "댓글",
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">게시글 댓글 목록 Response</response>
+        /// <response code="404">수정 할 댓글 정보를 찾을 수 없음</response>
+        /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpPut("comments/{commentId}")]
+        [Produces("application/json")]
         public async Task<ActionResult<Comment>?> UpdateComment(long commentId, CommentWriteDTO comment)
         {
             try
@@ -75,6 +120,15 @@ namespace board_dotnet.Controllers
             }
         }
 
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE /api/comments/131
+        ///
+        /// </remarks>
+        /// <response code="200">삭제 성공</response>
+        /// <response code="404">삭제 할 댓글 정보를 찾을 수 없음</response>
+        /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpDelete("comments/{commentId}")]
         public async Task<ActionResult<Comment>?> DeleteComment(long commentId)
