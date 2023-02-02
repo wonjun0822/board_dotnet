@@ -6,7 +6,7 @@ namespace board_dotnet.DTO
         public string title { get; set; } = string.Empty;
         public int viewCount { get; set; } = 0;
         public string nickname { get; set; } = string.Empty;
-        public DateTime createAt { get; set; }
+        public DateTime updateAt { get; set; }
     }
 
     // public static explicit operator Articles(Article article)
@@ -17,7 +17,7 @@ namespace board_dotnet.DTO
     //         title = article.title,
     //         viewCount = article.viewCount
     //     };
-
+    
     //     return response;
     // }
 }

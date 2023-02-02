@@ -22,6 +22,9 @@ namespace board_dotnet.Repository
         {
             try
             {
+                if (!await _context.Articles.Where(x => x.id == articleId).AnyAsync())
+                    return null;
+                    
                 var comments = await _context.Comments.Where(e => EF.Property<long>(e, "articleId") == articleId).Select(s => new CommentDTO() {
                     articleId = s.articleId,
                     commentId = s.id,
@@ -45,6 +48,9 @@ namespace board_dotnet.Repository
         {
             try
             {
+                if (!await _context.Articles.Where(x => x.id == articleId).AnyAsync())
+                    return null;
+
                 var comment = new Comment(articleId, request.comment);
 
                 comment.member = await _context.Members.Where(x => x.member_id == _userResolverProvider.GetById()).FirstOrDefaultAsync();
