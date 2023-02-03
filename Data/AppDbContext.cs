@@ -25,9 +25,14 @@ namespace board_dotnet.Data
                 .Navigation(b => b.articleComments)
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
 
-            // modelBuilder.Entity<Comment>()
-            //     .Property<long>("articleId")
-            //     .HasColumnName("article_id");
+            modelBuilder.Entity<Article>()
+                .HasMany(b => b.articleFiles)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Article>()
+                .Navigation(b => b.articleFiles)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);
 
             modelBuilder.Entity<Article>()
                 .HasOne<Member>(b => b.member)
