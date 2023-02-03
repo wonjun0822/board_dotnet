@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace board_dotnet.Model
@@ -47,6 +48,8 @@ namespace board_dotnet.Model
         public DateTime updateAt { get; private set; }
 
         public virtual ICollection<Comment> articleComments { get; set; } = new HashSet<Comment>();
+
+        public virtual ICollection<File> articleFiles { get; set; } = new HashSet<File>();
 
         public virtual Member member { get; set; } = new Member();
     }
