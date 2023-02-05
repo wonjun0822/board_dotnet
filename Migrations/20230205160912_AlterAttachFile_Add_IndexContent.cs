@@ -13,7 +13,7 @@ namespace boarddotnet.Migrations
             migrationBuilder.AlterColumn<string>(
                 name: "content",
                 table: "article",
-                type: "varchar(max)",
+                type: "varchar(2000)",
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "text")
@@ -39,7 +39,7 @@ namespace boarddotnet.Migrations
                 type: "text",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "varchar(max)")
+                oldType: "varchar(2000)")
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
         }
