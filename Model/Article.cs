@@ -49,7 +49,7 @@ namespace board_dotnet.Model
 
         public virtual ICollection<Comment> articleComments { get; set; } = new HashSet<Comment>();
 
-        public virtual ICollection<File> articleFiles { get; set; } = new HashSet<File>();
+        public virtual ICollection<AttachFile> articleFiles { get; set; } = new HashSet<AttachFile>();
 
         public virtual Member member { get; set; } = new Member();
     }

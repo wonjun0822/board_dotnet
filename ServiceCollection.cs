@@ -1,5 +1,6 @@
 using board_dotnet.JWT;
 using board_dotnet.Repository;
+using board_dotnet.Service;
 using board_dotnet.Data;
 
 using System.IO.Compression;
@@ -76,9 +77,11 @@ namespace Microsoft.Extensions.DependencyInjection
             _services?.AddSingleton<AuditingEntitiesInterceptor>();
             _services?.AddSingleton<IUserResolverProvider, UserResolverProvider>();
 
-            _services?.AddScoped<IArticleRepository, ArticleRepository>();
-            _services?.AddScoped<ICommentRepository, CommentRepository>();
-            _services?.AddScoped<IMemberRepository, MemberRepository>();
+            _services?.AddScoped<IArticleService, ArticleService>();
+            _services?.AddScoped<ICommentService, CommentService>();
+            _services?.AddScoped<IMemberService, MemberService>();
+            _services?.AddScoped<IAttachFileService, AttachFileService>();
+            _services?.AddScoped<IAzureStorageService, AzureStorageService>();
 
             _services?.AddScoped<IJwtProvider, JwtProvider>();
         }

@@ -9,5 +9,6 @@ namespace board_dotnet.DTO
         public DateTime updateAt { get; set; }
 
         public virtual ICollection<CommentDTO> comments { get; set; } = new HashSet<CommentDTO>();
+        public virtual ICollection<AttachFileDTO> files { get; set; } = new HashSet<AttachFileDTO>();
     }
 }

@@ -1,5 +1,5 @@
 using board_dotnet.DTO;
-using board_dotnet.Repository;
+using board_dotnet.Service;
 using board_dotnet.JWT;
 
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +10,12 @@ namespace board_dotnet.Controllers
     [Route("api")]
     public class MemberController : ControllerBase
     {
-        private readonly IMemberRepository _memberRepository;
+        private readonly IMemberService _memberService;
         private readonly IJwtProvider _jwtProvider;
 
-        public MemberController(IMemberRepository memberRepository, IJwtProvider jwtProvider)
+        public MemberController(IMemberService memberService, IJwtProvider jwtProvider)
         {
-            _memberRepository = memberRepository;
+            _memberService = memberService;
             _jwtProvider = jwtProvider;
         }
 
@@ -38,7 +38,7 @@ namespace board_dotnet.Controllers
         [HttpPost("login")]
         public async Task<ActionResult?> Login([FromBody] LoginDTO request)
         {
-            var member = await _memberRepository.GetMember(request.id, request.pwd);
+            var member = await _memberService.GetMember(request.id, request.pwd);
 
             if (member == null)
                 return NotFound();
@@ -47,7 +47,5 @@ namespace board_dotnet.Controllers
 
             return Ok(token);
         }
-
-        
     }
 }

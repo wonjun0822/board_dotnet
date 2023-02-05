@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using board_dotnet.Data;
 
@@ -10,9 +11,11 @@ using board_dotnet.Data;
 namespace boarddotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230205060457_ModifyFileTable")]
+    partial class ModifyFileTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,10 +82,6 @@ namespace boarddotnet.Migrations
                     b.Property<long>("articleId")
                         .HasColumnType("bigint")
                         .HasColumnName("article_id");
-
-                    b.Property<string>("blobName")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("createAt")
                         .HasColumnType("datetime(6)")

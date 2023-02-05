@@ -2,9 +2,9 @@ using board_dotnet.DTO;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace board_dotnet.Repository
+namespace board_dotnet.Service
 {
-    public interface ICommentRepository
+    public interface ICommentService
     {
         Task<List<CommentDTO>?> GetComments(long articleId);
         Task<List<CommentDTO>?> AddComment(long articleId, CommentWriteDTO request);

@@ -9,6 +9,7 @@ namespace board_dotnet.Data
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Article> Articles { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<AttachFile> AttachFiles { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

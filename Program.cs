@@ -64,7 +64,6 @@ builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOpti
 // });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddPagination();
 
 var app = builder.Build();
 
