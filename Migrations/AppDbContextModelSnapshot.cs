@@ -27,7 +27,7 @@ namespace boarddotnet.Migrations
 
                     b.Property<string>("content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime>("createAt")
                         .HasColumnType("datetime(6)")

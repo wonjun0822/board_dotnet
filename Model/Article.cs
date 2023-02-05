@@ -26,7 +26,7 @@ namespace board_dotnet.Model
         [Column(TypeName = "varchar(100)")]
         public string title { get; set; } = string.Empty;
 
-        [Column(TypeName = "text")]
+        [Column(TypeName = "varchar(max)")]
         public string content { get; set; } = string.Empty;
 
         [Column("view_count")]

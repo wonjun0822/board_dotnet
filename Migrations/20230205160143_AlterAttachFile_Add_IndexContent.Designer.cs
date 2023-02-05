@@ -11,7 +11,7 @@ using board_dotnet.Data;
 namespace boarddotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230205155534_AlterAttachFile_Add_IndexContent")]
+    [Migration("20230205160143_AlterAttachFile_Add_IndexContent")]
     partial class AlterAttachFileAddIndexContent
     {
         /// <inheritdoc />
@@ -30,7 +30,7 @@ namespace boarddotnet.Migrations
 
                     b.Property<string>("content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime>("createAt")
                         .HasColumnType("datetime(6)")
