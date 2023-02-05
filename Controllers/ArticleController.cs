@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 using board_dotnet.Service;
 using board_dotnet.DTO;
-
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
+using board_dotnet.Enum;
 
 namespace board_dotnet.Controllers
 {
@@ -54,11 +52,11 @@ namespace board_dotnet.Controllers
         // [ProducesResponseType(StatusCodes.Status200OK)]
         // [ProducesResponseType(StatusCodes.Status404NotFound)]
         // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task <ActionResult<OffsetDTO<List<ArticleDTO>?>?>> GetArticlesOffSet(int pageIndex = 1, int pageSize = 20)
+        public async Task <ActionResult<OffsetDTO<List<ArticleDTO>?>?>> GetArticlesOffSet(SearchType? searchType, string? searchKeyword, int pageIndex = 1, int pageSize = 20)
         {
             try
             {
-                var articles = await _articleService.GetArticlesOffset(pageIndex, pageSize);
+                var articles = await _articleService.GetArticlesOffset(searchType, searchKeyword, pageIndex, pageSize);
 
                 if (articles == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
