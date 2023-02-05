@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using board_dotnet.Model;
-using board_dotnet.Repository;
+using board_dotnet.Service;
 using board_dotnet.DTO;
 using Microsoft.AspNetCore.Authorization;
 
@@ -11,11 +11,11 @@ namespace board_dotnet.Controllers
     [Route("api")]
     public class CommentController : ControllerBase
     {
-        private readonly ICommentRepository _commentRepository;
+        private readonly ICommentService _commentService;
 
-        public CommentController(ICommentRepository commentRepository)
+        public CommentController(ICommentService commentService)
         {
-            _commentRepository = commentRepository;
+            _commentService = commentService;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var comments = await _commentRepository.GetComments(articleId);
+                var comments = await _commentService.GetComments(articleId);
 
                 if (comments == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
@@ -73,7 +73,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var result = await _commentRepository.AddComment(articleId, request);
+                var result = await _commentService.AddComment(articleId, request);
 
                 if (result == null)
                     return NotFound("댓글을 추가 할 게시글을 찾을 수 없습니다.");
@@ -109,7 +109,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var result = await _commentRepository.UpdateComment(commentId, comment);
+                var result = await _commentService.UpdateComment(commentId, comment);
 
                  if (result == null)
                     return NotFound("댓글을 찾을 수 없습니다.");
@@ -141,7 +141,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var result = await _commentRepository.DeleteComment(commentId);
+                var result = await _commentService.DeleteComment(commentId);
 
                 if (result == null)
                     return NotFound("댓글을 찾을 수 없습니다.");

@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-using board_dotnet.Repository;
+using board_dotnet.Service;
 using board_dotnet.DTO;
+
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
 namespace board_dotnet.Controllers
 {
@@ -13,13 +16,23 @@ namespace board_dotnet.Controllers
     [Route("api")]
     public class ArticleController : ControllerBase
     {
-        private readonly IArticleRepository _articleRepository;
+        private readonly IArticleService _articleService;
+        private readonly IAzureStorageService _azureStorageService;
 
-        public ArticleController(IArticleRepository articleRepository)
+        public ArticleController(IArticleService articleService, IAzureStorageService azureStorageService)
         {
-            _articleRepository = articleRepository;
+            _articleService = articleService;
+            _azureStorageService = azureStorageService;
         }
 
+        // [HttpPost("fileUpload")]
+        // public async Task <ActionResult> UploadFile(IFormFile? file)
+        // {
+        //     var result = await _azureStorageService.UploadFile(file);
+
+        //     return Ok(result);
+        // }
+        
         /// <summary>
         /// 게시글 목록 조회 (Offset Pagination)
         /// </summary>
@@ -45,7 +58,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var articles = await _articleRepository.GetArticlesOffset(pageIndex, pageSize);
+                var articles = await _articleService.GetArticlesOffset(pageIndex, pageSize);
 
                 if (articles == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
@@ -80,7 +93,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var articles = await _articleRepository.GetArticlesCursor(cursor);
+                var articles = await _articleService.GetArticlesCursor(cursor);
 
                 if (articles == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
@@ -113,7 +126,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var article = await _articleRepository.GetArticle(id);
+                var article = await _articleService.GetArticle(id);
 
                 if (article == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
@@ -137,6 +150,7 @@ namespace board_dotnet.Controllers
         ///     {
         ///         "title": "제목",
         ///         "content": "내용"
+        ///         "file": "select file"
         ///     }
         ///
         /// </remarks>
@@ -146,11 +160,11 @@ namespace board_dotnet.Controllers
         [Authorize]
         [HttpPost("articles")]
         [Produces("application/json")]
-        public async Task<ActionResult<ArticleDetailDTO>?> AddArticle([FromBody] ArticleWriteDTO article)
+        public async Task<ActionResult<ArticleDetailDTO>?> AddArticle([FromForm] ArticleWriteDTO article)
         {
             try
             {
-                var result = await _articleRepository.AddArticle(article);
+                var result = await _articleService.AddArticle(article);
 
                 if (result == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
@@ -174,6 +188,7 @@ namespace board_dotnet.Controllers
         ///     {
         ///         "title": "제목",
         ///         "content": "내용"
+        ///         "file": "select file"
         ///     }
         ///
         /// </remarks>
@@ -183,11 +198,11 @@ namespace board_dotnet.Controllers
         [Authorize]
         [HttpPut("articles/{id}")]
         [Produces("application/json")]
-        public async Task<ActionResult<ArticleDetailDTO>?> UpdateArticle(long id, ArticleWriteDTO request)
+        public async Task<ActionResult<ArticleDetailDTO>?> UpdateArticle(long id, [FromForm] ArticleWriteDTO request)
         {
             try
             {
-                var result = await _articleRepository.UpdateArticle(id, request);
+                var result = await _articleService.UpdateArticle(id, request);
 
                 if (result == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
@@ -223,7 +238,7 @@ namespace board_dotnet.Controllers
         {
             try
             {
-                var result = await _articleRepository.DeleteArticle(id);
+                var result = await _articleService.DeleteArticle(id);
 
                 if (result == null)
                     return NotFound("게시글을 찾을 수 없습니다.");

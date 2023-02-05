@@ -1,18 +1,19 @@
 using board_dotnet.Data;
 using board_dotnet.Model;
 using board_dotnet.DTO;
+using board_dotnet.Service;
+using board_dotnet.JWT;
 
 using Microsoft.EntityFrameworkCore;
-using board_dotnet.JWT;
 
 namespace board_dotnet.Repository
 {
-    public class CommentRepository : ICommentRepository
+    public class CommentService : ICommentService
     {
         private readonly AppDbContext _context;
         private readonly IUserResolverProvider _userResolverProvider;
         
-        public CommentRepository(AppDbContext context, IUserResolverProvider userResolverProvider)
+        public CommentService(AppDbContext context, IUserResolverProvider userResolverProvider)
         {
             _context = context;
             _userResolverProvider = userResolverProvider;
