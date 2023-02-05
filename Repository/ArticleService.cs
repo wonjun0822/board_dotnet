@@ -3,6 +3,7 @@ using board_dotnet.DTO;
 using board_dotnet.JWT;
 using board_dotnet.Model;
 using board_dotnet.Service;
+using board_dotnet.Enum;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -21,13 +22,13 @@ namespace board_dotnet.Repository
             _attachFileService = attachFileService;
         }
 
-        public async Task<OffsetDTO<List<ArticleDTO>?>?> GetArticlesOffset(int pageIndex, int pageSize)
+        public async Task<OffsetDTO<List<ArticleDTO>?>?> GetArticlesOffset(SearchType? searchType, string? searchKeyword, int pageIndex, int pageSize)
         {
             try
             {
-                // var articles = await _context.Articles.Include(b => b.articleComments).ToListAsync();
                 var articles = await _context.Articles
                     .AsNoTracking()
+                    .Where(e => searchKeyword == null ? true : EF.Property<string>(e, searchType.ToString()).Contains(searchKeyword))
                     .Select(
                         s => new ArticleDTO() { 
                             id = s.id, 
@@ -45,7 +46,7 @@ namespace board_dotnet.Repository
                 if (articles == null)
                     return null;
                     
-                var totalCount = await _context.Articles.CountAsync();
+                var totalCount = await _context.Articles.AsNoTracking().Where(e => searchKeyword == null ? true : EF.Property<string>(e, searchType.ToString()).Contains(searchKeyword)).CountAsync();
 
                 return new OffsetDTO<List<ArticleDTO>?>(articles, pageIndex, pageSize, (int)Math.Ceiling(((double)totalCount / pageSize)));
             }

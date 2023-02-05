@@ -1,6 +1,5 @@
-using System.Linq;
 using board_dotnet.JWT;
-using board_dotnet.Model;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
