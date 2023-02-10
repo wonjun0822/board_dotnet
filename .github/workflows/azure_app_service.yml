@@ -31,21 +31,21 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - uses: actions/checkout@v2
-      - run: touch ./appsettings.json
+      # - uses: actions/checkout@v2
+      # - run: touch ./appsettings.json
 
-      - uses: jsdaniell/create-json@1.1.2
-        with:
-          name: "appsettings.json"
-          json: ${{ secrets.APPLICATION }}
-          dir: ./
+      # - uses: jsdaniell/create-json@1.1.2
+      #   with:
+      #     name: "appsettings.json"
+      #     json: ${{ secrets.APPLICATION }}
+      #     dir: ./
           
-      - uses: actions/upload-artifact@v2
-        with:
-          name: appsettings.json
-          path: ./appsettings.json
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: appsettings.json
+      #     path: ./appsettings.json
           
-      - run: ls ./
+      # - run: ls ./
       
       - name: Log in to GitHub container registry
         uses: docker/login-action@v1.10.0
