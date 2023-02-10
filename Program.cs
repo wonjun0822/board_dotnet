@@ -67,7 +67,6 @@ builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOpti
 builder.Services.AddHttpContextAccessor();
 
 var configurationBuilder = new ConfigurationBuilder()
-                            .SetBasePath(builder.Environment.ContentRootPath)
                             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                             .AddEnvironmentVariables();
 
