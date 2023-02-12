@@ -35,11 +35,11 @@ jobs:
       - run: |
           touch ./appsettings.production.json
 
-      - uses: jsdaniell/create-json@1.1.2
+      - uses: jnus/json-variables@4a442c701d13455259c65b315c7dce51d1c9edf7
         with:
-          name: "appsettings.production.json"
+          scope: 'production'
+          configFile: 'appsettings.production.json'
           json: ${{ secrets.APPLICATION }}
-          dir: ./
           
       - uses: actions/upload-artifact@v2
         with:
