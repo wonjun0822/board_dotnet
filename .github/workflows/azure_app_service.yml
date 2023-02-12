@@ -42,7 +42,7 @@ jobs:
           json: ${{ secrets.APPLICATION }}
           dir: ./
 
-      - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./appsettings.json && git status && git commit -a -m "Commit Json Created" 
+      - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./appsettings.json && git status && git commit -a -m "Commit Json Created && git push" 
 
       - uses: actions/upload-artifact@v2
         with:
@@ -81,7 +81,7 @@ jobs:
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@0b651ed7546ecfc75024011f76944cb9b381ef1e
+        uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
