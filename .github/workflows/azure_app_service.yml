@@ -43,12 +43,12 @@ jobs:
       # - run: |
       #     touch ./appsettings.production.json
 
-      # - uses: actions/checkout@v3
-      # - uses: jsdaniell/create-json@v1.2.1
-      #   with:
-      #     name: "appsettings.json"
-      #     json: ${{ secrets.APPLICATION }}
-      #     dir: ./
+      - uses: actions/checkout@v3
+      - uses: jsdaniell/create-json@v1.2.1
+        with:
+          name: "temp.json"
+          json: ${{ secrets.APPLICATION }}
+          dir: ./
 
       # - run: dotnet publish -c Release
       # - run: ls ./
