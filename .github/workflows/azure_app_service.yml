@@ -33,11 +33,7 @@ jobs:
           Jwt.Audience: 'Audience'
           Jwt.SecretKey: 'XCAP05H6LoKvbRRa/QkqLNMI7cOHguaRyHzyg7n5qEkGjQmtBhz4SzYh4Fqwjyi3KJHlSXKPwVu2+bXr6CtpgQ=='
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: appsettings.json
-          path: ./appsettings.json
+      - run: cat ./appsettings.json
 
       # - uses: actions/checkout@v2
       # - run: |
@@ -51,6 +47,7 @@ jobs:
           dir: ./
 
       - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./temp.json && git status && git commit -a -m "test" && git push
+      - run: cat ./temp.json
 
       # - run: dotnet publish -c Release
       # - run: ls ./
