@@ -37,11 +37,11 @@ jobs:
 
       - uses: jsdaniell/create-json@1.1.2
         with:
-          name: "appsettings.production.json"
+          name: "appsettings.json"
           json: ${{ secrets.APPLICATION }}
           dir: ./
 
-      - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./appsettings.production.json && git status && git commit -a -m "Commit Json Created" 
+      - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./appsettings.json && git status && git commit -a -m "Commit Json Created" 
 
       # - uses: actions/upload-artifact@v2
       #   with:
