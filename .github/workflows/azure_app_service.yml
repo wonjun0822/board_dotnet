@@ -32,21 +32,21 @@ jobs:
       # - run: |
       #     touch ./appsettings.production.json
 
-      - uses: actions/checkout@v3
-      - uses: jsdaniell/create-json@v1.2.1
-        with:
-          name: "appsettings.json"
-          json: ${{ secrets.APPLICATION }}
-          dir: ./
+      # - uses: actions/checkout@v3
+      # - uses: jsdaniell/create-json@v1.2.1
+      #   with:
+      #     name: "appsettings.json"
+      #     json: ${{ secrets.APPLICATION }}
+      #     dir: ./
 
-      - run: dotnet publish -c Release
-      - run: ls ./
-      - run: ls ./bin/Release/net7.0/publish
+      # - run: dotnet publish -c Release
+      # - run: ls ./
+      # - run: ls ./bin/Release/net7.0/publish
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: appsettings.json
-          path: ./bin/Release/net7.0/publish/appsettings.json
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: appsettings.json
+      #     path: ./bin/Release/net7.0/publish/appsettings.json
 
       - uses: microsoft/variable-substitution@v1
         with:
