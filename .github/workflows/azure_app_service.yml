@@ -43,6 +43,12 @@ jobs:
           dir: ./
 
       - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./appsettings.json && git status && git commit -a -m "Commit Json Created && git push" 
+      
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - uses: actions/upload-artifact@v2
         with:
