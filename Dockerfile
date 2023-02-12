@@ -9,18 +9,12 @@ COPY . ./
 #RUN dotnet publish -c Release -o /app -r linux-musl-x64 --self-contained true --no-restore /p:PublishTrimmed=true /p:PublishReadyToRun=true /p:PublishSingleFile=true
 RUN dotnet publish -c Release -o /app -r linux-musl-x64 --self-contained false --no-restore
 
-RUN ls ./
-RUN ls /app
-
 #FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine-amd64
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine-amd64
 WORKDIR /app
 COPY --from=build /app .
 
-COPY ./temp.json /app/appsettings.json
-
-RUN cat /app/appsettings.json
-RUN cat ./temp.json
+#COPY ./temp.json /app/appsettings.json
 
 #EXPOSE 8000
 #EXPOSE 443
