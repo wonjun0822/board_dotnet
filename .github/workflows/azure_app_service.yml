@@ -37,7 +37,6 @@ jobs:
 
       - uses: jnus/json-variables@4a442c701d13455259c65b315c7dce51d1c9edf7
         with:
-          scope: 'production'
           configFile: 'appsettings.json'
           secrets: ${{ secrets.APPLICATION }}
           
