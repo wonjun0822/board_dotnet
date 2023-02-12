@@ -46,7 +46,9 @@ jobs:
           name: appsettings.json
           path: ./appsettings.json
 
+      - run: dotnet build --configuration Release
       - run: ls ./
+      - run: ls ./bin/Release/net7.0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
