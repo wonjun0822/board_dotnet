@@ -32,12 +32,12 @@ jobs:
       # - run: |
       #     touch ./appsettings.production.json
 
-      - uses: actions/checkout@v3
-      - uses: jsdaniell/create-json@v1.2.1
-        with:
-          name: "appsettings.json"
-          json: ${{ secrets.APPLICATION }}
-          dir: ./
+      # - uses: actions/checkout@v3
+      # - uses: jsdaniell/create-json@v1.2.1
+      #   with:
+      #     name: "appsettings.json"
+      #     json: ${{ secrets.APPLICATION }}
+      #     dir: ./
 
       - run: dotnet publish -c Release
       - run: ls ./
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: appsettings.json
-          path: ./bin/Release/net7.0/appsettings.json
+          path: ./bin/Release/net7.0/publish/appsettings.json
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
