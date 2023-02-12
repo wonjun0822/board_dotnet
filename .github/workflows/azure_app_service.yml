@@ -68,8 +68,6 @@ jobs:
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./Dockerfile
 
-      - run: ./app
-      
   deploy:
     runs-on: ubuntu-latest
 
