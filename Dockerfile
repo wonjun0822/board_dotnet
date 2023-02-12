@@ -17,7 +17,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine-amd64
 WORKDIR /app
 COPY --from=build /app .
 
-ADD ./appsettings.json /app/appsettings.json
+RUN cat /app/appsettings.json
 
 #EXPOSE 8000
 #EXPOSE 443
