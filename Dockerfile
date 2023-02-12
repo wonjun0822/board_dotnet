@@ -18,7 +18,9 @@ WORKDIR /app
 COPY --from=build /app .
 
 COPY ./temp.json /app/appsettings.json
+
 RUN cat /app/appsettings.json
+RUN cat ./temp.json
 
 #EXPOSE 8000
 #EXPOSE 443
