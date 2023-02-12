@@ -27,6 +27,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: microsoft/variable-substitution@v1
+        with:
+          files: 'appsettings.json'
+        env:
+          Jwt.Issuer: 'Issuer'
+          Jwt.Audience: 'Audience'
+          Jwt.SecretKey: 'XCAP05H6LoKvbRRa/QkqLNMI7cOHguaRyHzyg7n5qEkGjQmtBhz4SzYh4Fqwjyi3KJHlSXKPwVu2+bXr6CtpgQ=='
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: appsettings.json
+          path: ./appsettings.json
 
       # - uses: actions/checkout@v2
       # - run: |
@@ -55,15 +68,6 @@ jobs:
 
       - name: Lowercase the repo name
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
-      - uses: actions/checkout@v3
-      - uses: microsoft/variable-substitution@v1
-        with:
-          files: 'appsettings.json'
-        env:
-          Jwt.Issuer: 'Issuer'
-          Jwt.Audience: 'Audience'
-          Jwt.SecretKey: 'XCAP05H6LoKvbRRa/QkqLNMI7cOHguaRyHzyg7n5qEkGjQmtBhz4SzYh4Fqwjyi3KJHlSXKPwVu2+bXr6CtpgQ=='
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
