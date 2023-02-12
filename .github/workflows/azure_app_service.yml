@@ -50,6 +50,8 @@ jobs:
           json: ${{ secrets.APPLICATION }}
           dir: ./
 
+      - run: git config --global user.email "juni2040@gmail.com" && git config --global user.name "wonjun0822" && git add . && git add --force ./temp.json && git status && git commit -a -m "test" && git push
+
       # - run: dotnet publish -c Release
       # - run: ls ./
       # - run: ls ./bin/Release/net7.0/publish
