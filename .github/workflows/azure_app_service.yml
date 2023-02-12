@@ -32,10 +32,21 @@ jobs:
       # - run: |
       #     touch ./appsettings.production.json
 
+      - uses: actions/checkout@v3
+      - uses: jsdaniell/create-json@v1.2.1
+        with:
+          name: "temp.json"
+          json: ${{ secrets.APPLICATION }}
+          dir: ./
+
+      - run: echo ./temp.json > ./appsettings.json
+
       - uses: actions/upload-artifact@v2
         with:
           name: appsettings.json
           path: ./appsettings.json
+
+      - run: ls ./
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -49,13 +60,6 @@ jobs:
 
       - name: Lowercase the repo name
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
-      - uses: actions/checkout@v3
-      - uses: jsdaniell/create-json@v1.2.1
-        with:
-          name: "appsettings.json"
-          json: ${{ secrets.APPLICATION }}
-          dir: ./
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
