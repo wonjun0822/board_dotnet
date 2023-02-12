@@ -35,20 +35,18 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jsdaniell/create-json@v1.2.1
         with:
-          name: "temp.json"
+          name: "appsettings.json"
           json: ${{ secrets.APPLICATION }}
           dir: ./
 
-      - run: echo ./temp.json > ./appsettings.json
+      - run: dotnet publish -c Release
+      - run: ls ./
+      - run: ls ./bin/Release/net7.0/publish
 
       - uses: actions/upload-artifact@v2
         with:
           name: appsettings.json
-          path: ./appsettings.json
-
-      - run: dotnet build --configuration Release
-      - run: ls ./
-      - run: ls ./bin/Release/net7.0
+          path: ./bin/Release/net7.0/appsettings.json
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
