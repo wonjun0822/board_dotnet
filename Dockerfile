@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
+RUN ls ./
+
 COPY . ./
 #RUN dotnet restore -r linux-musl-x64 /p:PublishReadyToRun=true
 RUN dotnet restore -r linux-musl-x64
