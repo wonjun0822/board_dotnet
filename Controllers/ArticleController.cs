@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using board_dotnet.Service;
 using board_dotnet.DTO;
 using board_dotnet.Enum;
+using board_dotnet.Repository;
 
 namespace board_dotnet.Controllers
 {
@@ -15,22 +16,12 @@ namespace board_dotnet.Controllers
     public class ArticleController : ControllerBase
     {
         private readonly IArticleService _articleService;
-        private readonly IAzureStorageService _azureStorageService;
 
-        public ArticleController(IArticleService articleService, IAzureStorageService azureStorageService)
+        public ArticleController(IArticleService articleService)
         {
             _articleService = articleService;
-            _azureStorageService = azureStorageService;
         }
 
-        // [HttpPost("fileUpload")]
-        // public async Task <ActionResult> UploadFile(IFormFile? file)
-        // {
-        //     var result = await _azureStorageService.UploadFile(file);
-
-        //     return Ok(result);
-        // }
-        
         /// <summary>
         /// 게시글 목록 조회 (Offset Pagination)
         /// </summary>
