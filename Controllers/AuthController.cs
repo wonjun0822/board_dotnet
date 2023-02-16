@@ -86,6 +86,8 @@ namespace board_dotnet.Controllers
         {
             await _authService.Logout();
 
+            Response.Cookies.Delete("refreshToken");
+
             return Ok();
         }
 
