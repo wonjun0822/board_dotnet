@@ -36,9 +36,11 @@ jobs:
         with:
           files: 'appsettings.json'
         env:
-          Jwt.Issuer: 'Issuer'
-          Jwt.Audience: 'Audience'
-          Jwt.SecretKey: 'XCAP05H6LoKvbRRa/QkqLNMI7cOHguaRyHzyg7n5qEkGjQmtBhz4SzYh4Fqwjyi3KJHlSXKPwVu2+bXr6CtpgQ=='
+          Jwt.Issuer: ${{ secrets.JWT_ISSUER }}
+          Jwt.Audience: ${{ secrets.JWT_AUDIENCE }}
+          Jwt.SecretKey: ${{ secrets.JWT_SECRETKEY }}
+          ConnectionStrings.REDIS: ${{ secrets.CONNECTION_REDIS }}
+          ConnectionStrings.MYSQL: ${{ secrets.CONNECTION_MYSQL }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
