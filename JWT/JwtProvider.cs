@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 
-using board_dotnet.Model;
+using board_dotnet.DTO;
 
 namespace board_dotnet.JWT;
 
@@ -17,23 +17,24 @@ internal sealed class JwtProvider : IJwtProvider
         _jwtOptions = jwtOptions.Value;
     }
 
-    public string Generate(Member member)
+    public string GenerateToken(MemberDTO member)
     {
         var secretKey = new SymmetricSecurityKey(Convert.FromBase64String(_jwtOptions.SecretKey));
+
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
-        var jwtToken = new JwtSecurityToken(
+        var accessToken = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
-            expires: DateTime.Now.AddDays(7),
+            expires: DateTime.Now.AddDays(1),
             signingCredentials: credentials,
             claims: new Claim[] {
-                //new Claim(JwtRegisteredClaimNames.Sub, member.member_id),
-                new Claim(ClaimTypes.NameIdentifier, member.member_id),
+                new Claim(ClaimTypes.NameIdentifier, member.id),
+                new Claim(ClaimTypes.Email, member.email),
                 new Claim(ClaimTypes.Name, member.nickname)
             }
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        return new JwtSecurityTokenHandler().WriteToken(accessToken);
     }
 }

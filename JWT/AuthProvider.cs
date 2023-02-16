@@ -1,18 +1,12 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Options;
-
-using board_dotnet.Model;
 
 namespace board_dotnet.JWT;
 
-internal sealed class UserResolverProvider : IUserResolverProvider
+internal sealed class AuthProvider : IAuthProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserResolverProvider(IHttpContextAccessor httpContextAccessor)
+    public AuthProvider(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -20,5 +14,10 @@ internal sealed class UserResolverProvider : IUserResolverProvider
     public string GetById()
     {
         return _httpContextAccessor?.HttpContext?.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier)?.Value!;
+    }
+
+    public string GetCookie(string cookieName)
+    {
+        return _httpContextAccessor?.HttpContext?.Request?.Cookies[cookieName]?.ToString()!;
     }
 }

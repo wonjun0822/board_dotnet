@@ -7,11 +7,11 @@ namespace board_dotnet.Interceptors;
 
 public sealed class AuditingEntitiesInterceptor : SaveChangesInterceptor
 {
-    private readonly IUserResolverProvider _userResolverProvider;
+    private readonly IAuthProvider _authProvider;
     
-    public AuditingEntitiesInterceptor(IUserResolverProvider userResolverProvider)
+    public AuditingEntitiesInterceptor(IAuthProvider authProvider)
     {
-        _userResolverProvider = userResolverProvider;
+        _authProvider = authProvider;
     }
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
@@ -31,23 +31,23 @@ public sealed class AuditingEntitiesInterceptor : SaveChangesInterceptor
         }
 
         dbContext.ChangeTracker.Entries().Where(x => x.State == EntityState.Added).ToList().ForEach(e => {
-            e.Property("createBy").CurrentValue = _userResolverProvider.GetById();
+            e.Property("createBy").CurrentValue = _authProvider.GetById();
             e.Property("createAt").CurrentValue = DateTime.Now;
 
-            e.Property("updateBy").CurrentValue = _userResolverProvider.GetById();
+            e.Property("updateBy").CurrentValue = _authProvider.GetById();
             e.Property("updateAt").CurrentValue = DateTime.Now;
         });
 
         dbContext.ChangeTracker.Entries().Where(x => x.State == EntityState.Modified).ToList().ForEach(e => {
             if (!e.Members.Any(e => e.Metadata.Name == "viewCount"))
             {
-                e.Property("updateBy").CurrentValue = _userResolverProvider.GetById();
+                e.Property("updateBy").CurrentValue = _authProvider.GetById();
                 e.Property("updateAt").CurrentValue = DateTime.Now;
             }
 
             else if (e.Property("viewCount").IsModified == false)
             {
-                e.Property("updateBy").CurrentValue = _userResolverProvider.GetById();
+                e.Property("updateBy").CurrentValue = _authProvider.GetById();
                 e.Property("updateAt").CurrentValue = DateTime.Now;
             }
         });

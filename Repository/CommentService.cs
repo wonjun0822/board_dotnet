@@ -11,12 +11,12 @@ namespace board_dotnet.Repository
     public class CommentService : ICommentService
     {
         private readonly AppDbContext _context;
-        private readonly IUserResolverProvider _userResolverProvider;
+        private readonly IAuthProvider _authProvider;
         
-        public CommentService(AppDbContext context, IUserResolverProvider userResolverProvider)
+        public CommentService(AppDbContext context, IAuthProvider authProvider)
         {
             _context = context;
-            _userResolverProvider = userResolverProvider;
+            _authProvider = authProvider;
         }
 
         public async Task<List<CommentDTO>?> GetComments(long articleId)
@@ -54,7 +54,7 @@ namespace board_dotnet.Repository
 
                 var comment = new Comment(articleId, request.comment);
 
-                comment.member = await _context.Members.Where(x => x.member_id == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+                comment.member = await _context.Members.Where(x => x.member_id == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 _context.Comments.Add(comment);
 
@@ -73,7 +73,7 @@ namespace board_dotnet.Repository
         {
             try
             {
-                var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+                var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (comment is null)
                     return null;
@@ -98,7 +98,7 @@ namespace board_dotnet.Repository
         {
             try
             {
-                var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+                var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (comment is null)
                     return null;

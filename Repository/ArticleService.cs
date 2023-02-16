@@ -12,13 +12,13 @@ namespace board_dotnet.Repository
     public class ArticleService : IArticleService
     {
         private readonly AppDbContext _context;
-        private readonly IUserResolverProvider _userResolverProvider;
+        private readonly IAuthProvider _authProvider;
         private readonly IAttachFileService _attachFileService;
 
-        public ArticleService(AppDbContext context, IUserResolverProvider userResolverProvider, IAttachFileService attachFileService)
+        public ArticleService(AppDbContext context, IAuthProvider _authProvider, IAttachFileService attachFileService)
         {
             _context = context;
-            _userResolverProvider = userResolverProvider;
+            _authProvider = _authProvider;
             _attachFileService = attachFileService;
         }
 
@@ -156,7 +156,7 @@ namespace board_dotnet.Repository
                 {
                     var article = new Article(request.title, request.content);
 
-                    article.member = await _context.Members.Where(x => x.member_id == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+                    article.member = await _context.Members.Where(x => x.member_id == _authProvider.GetById()).FirstOrDefaultAsync();
 
                     _context.Articles.Add(article);
 
@@ -206,7 +206,7 @@ namespace board_dotnet.Repository
         {
             try
             {
-                var article = await _context.Articles.Where(x => x.id == id && x.createBy == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+                var article = await _context.Articles.Where(x => x.id == id && x.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (article is null)
                     return null;
@@ -252,7 +252,7 @@ namespace board_dotnet.Repository
         {
             try
             {
-                var article = await _context.Articles.Where(x => x.id == id && x.createBy == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+                var article = await _context.Articles.Where(x => x.id == id && x.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (article is null)
                     return null;

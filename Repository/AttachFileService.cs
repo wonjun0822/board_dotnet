@@ -11,13 +11,13 @@ public class AttachFileService : IAttachFileService
     private readonly AppDbContext _context;
     
     private readonly IAzureStorageService _azureStorageService;
-    private readonly IUserResolverProvider _userResolverProvider;
+    private readonly IAuthProvider _authProvider;
 
-    public AttachFileService(AppDbContext context, IAzureStorageService azureStorageService, IUserResolverProvider userResolverProvider)
+    public AttachFileService(AppDbContext context, IAzureStorageService azureStorageService, IAuthProvider authProvider)
     {
         _context = context;
         _azureStorageService = azureStorageService;
-        _userResolverProvider = userResolverProvider;
+        _authProvider = authProvider;
     }
 
     public async Task<List<AttachFileUploadDTO>> UploadFile(long articleId, ICollection<IFormFile>? files)
@@ -86,7 +86,7 @@ public class AttachFileService : IAttachFileService
     {
         try
         {
-            var attachFile = await _context.AttachFiles.Where(s => s.id == fileId && s.createBy == _userResolverProvider.GetById()).FirstOrDefaultAsync();
+            var attachFile = await _context.AttachFiles.Where(s => s.id == fileId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
             if (attachFile is null)
                 return null;
