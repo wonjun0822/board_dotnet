@@ -39,8 +39,8 @@ jobs:
           Jwt.Issuer: ${{ secrets.JWT_ISSUER }}
           Jwt.Audience: ${{ secrets.JWT_AUDIENCE }}
           Jwt.SecretKey: ${{ secrets.JWT_SECRET_KEY }}
-          ConnectionStrings.REDIS: ${{ secrets.CONNECTION_REDIS }}
-          ConnectionStrings.MYSQL: ${{ secrets.CONNECTION_MYSQL }}
+          ConnectionStrings.Redis: ${{ secrets.CONNECTION_REDIS }}
+          ConnectionStrings.MySQL: ${{ secrets.CONNECTION_MYSQL }}
 
       - uses: actions/upload-artifact@v2
         with:
