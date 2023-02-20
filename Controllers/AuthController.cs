@@ -2,6 +2,7 @@ using board_dotnet.DTO;
 using board_dotnet.Service;
 
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace board_dotnet.Controllers
 {
@@ -10,10 +11,20 @@ namespace board_dotnet.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IRedisService _rediseService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IRedisService redisService)
         {
             _authService = authService;
+            _rediseService = redisService;
+        }
+
+        [HttpGet("auth")]
+        public async Task<ActionResult?> Test()
+        {
+            await _rediseService.StringGet("wonjun");
+
+            return Ok();
         }
 
         /// <summary>

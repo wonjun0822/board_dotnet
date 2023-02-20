@@ -91,9 +91,10 @@ namespace Microsoft.Extensions.DependencyInjection
             _services?.AddScoped<IAzureStorageService, AzureStorageService>();
             _services?.AddScoped<IRedisService, RedisService>();
 
-            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_config["ConnectionStrings:Redis"]);
+            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_config["ConnectionStrings:Redis"].ToString());
 
-            _services?.AddScoped(s => redis.GetDatabase());
+            _services?.AddSingleton<IConnectionMultiplexer>(redis);
+            //_services?.AddScoped(s => redis.GetDatabase());
         }
     }
 }

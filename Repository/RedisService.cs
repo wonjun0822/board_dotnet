@@ -8,14 +8,19 @@ namespace board_dotnet.Repository
     {
         private readonly IDatabase _redis;
 
-        public RedisService(IDatabase redis)
+        public RedisService(IConnectionMultiplexer redis)
         {
-            _redis = redis;
+            _redis = redis.GetDatabase();
         }
+
+        // public RedisService(IDatabase redis)
+        // {
+        //     _redis = redis;
+        // }
 
         public async Task<RedisValue> StringGet(string key)
         {
-            return await _redis.StringGetAsync(key);
+            return await _redis.StringGetAsync(key, CommandFlags.PreferReplica);
         }
 
         public async Task StringSet(string key, object value, TimeSpan? expiry = null)
