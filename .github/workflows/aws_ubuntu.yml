@@ -75,5 +75,5 @@ jobs:
           
       - name: Docker run
         run: |
-          docker run -d -p 8000:8080 --name ${{ env.NAME }}_1 --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker run -d -p 7000:7080 --name ${{ env.NAME }}_2 --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker run -d -p 8000:8000 -e ASPNETCORE_URLS=http://+:8000 --name ${{ env.NAME }}_1 --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker run -d -p 7000:7000 -e ASPNETCORE_URLS=http://+:7000 --name ${{ env.NAME }}_2 --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
