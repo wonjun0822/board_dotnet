@@ -75,5 +75,5 @@ jobs:
           
       - name: Docker run
         run: |
-          docker run -d -p 8000:8080 --name ${{ env.NAME }} --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker run -d -p 7000:7080 --name ${{ env.NAME }} --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker run -d -p 8000:8080 --name ${{ env.NAME }}_1 --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker run -d -p 7000:7080 --name ${{ env.NAME }}_2 --restart always ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
