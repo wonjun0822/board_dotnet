@@ -8,6 +8,8 @@ namespace board_dotnet.DTO
         public string nickname { get; set; } = string.Empty;
         public DateTime updateAt { get; set; }
 
+        public bool isModify { get; set; } = false;
+
         public virtual ICollection<CommentDTO> comments { get; set; } = new HashSet<CommentDTO>();
         public virtual ICollection<AttachFileDTO> files { get; set; } = new HashSet<AttachFileDTO>();
     }

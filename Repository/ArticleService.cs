@@ -107,13 +107,15 @@ namespace board_dotnet.Repository
                             viewCount = s.viewCount,
                             nickname = s.member.nickname,
                             updateAt = s.updateAt,
+                            isModify = s.createBy == _authProvider.GetById(),
                             comments = s.articleComments.Select(
                                 o => new CommentDTO() { 
                                     articleId = o.articleId,
                                     commentId = o.id,
                                     comment = o.comment,
                                     nickname = o.member.nickname,
-                                    createAt = s.createAt
+                                    updateAt = s.updateAt,
+                                    isModify = s.createBy == _authProvider.GetById()
                                 }
                             ).OrderByDescending(o => o.commentId).ToList(),
                             files = s.articleFiles.Select(
@@ -284,7 +286,6 @@ namespace board_dotnet.Repository
                         id = s.id,
                         title = s.title,
                         content = s.content,
-                        nickname = s.member.nickname,
                         createAt = s.createAt,
                         updateAt = s.updateAt
                     }

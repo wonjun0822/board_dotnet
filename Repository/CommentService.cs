@@ -31,7 +31,8 @@ namespace board_dotnet.Repository
                     commentId = s.id,
                     comment = s.comment,
                     nickname = s.member.nickname,
-                    createAt = s.createAt
+                    updateAt = s.updateAt,
+                    isModify = s.createBy == _authProvider.GetById(),
                 })
                 .OrderByDescending(o => o.commentId)
                 .ToListAsync();
