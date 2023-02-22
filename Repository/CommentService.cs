@@ -45,7 +45,7 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<List<CommentDTO>?> AddComment(long articleId, CommentWriteDTO request)
+        public async Task<CommentResultDTO?> AddComment(long articleId, CommentWriteDTO request)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace board_dotnet.Repository
 
                 await _context.SaveChangesAsync();
 
-                return await GetComments(articleId);
+                return await CommentResult(comment.id);
             }
 
             catch
@@ -69,11 +69,11 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<List<CommentDTO>?> UpdateComment(long commentId, CommentWriteDTO request)
+        public async Task<CommentResultDTO?> UpdateComment(long articleId, long commentId, CommentWriteDTO request)
         {
             try
             {
-                var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
+                var comment = await _context.Comments.Where(s => s.articleId == articleId && s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (comment is null)
                     return null;
@@ -84,7 +84,7 @@ namespace board_dotnet.Repository
                     
                     await _context.SaveChangesAsync();
 
-                    return await GetComments(comment.articleId);
+                    return await CommentResult(comment.id);
                 }
             }
 
@@ -117,6 +117,23 @@ namespace board_dotnet.Repository
             {
                 throw;
             }
+        }
+
+        private async Task<CommentResultDTO> CommentResult(long commentId) {
+            return await _context.Comments
+                .AsNoTracking()
+                .Where(x => x.id == commentId)
+                .Select(
+                    s => new CommentResultDTO() {
+                        articleId = s.articleId,
+                        commentId = s.id,
+                        comment = s.comment,
+                        nickname = s.member.nickname,
+                        createAt = s.createAt,
+                        updateAt = s.updateAt  
+                    }
+                )
+                .FirstOrDefaultAsync();
         }
     }
 }

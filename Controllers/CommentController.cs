@@ -29,9 +29,9 @@ namespace board_dotnet.Controllers
         /// </remarks>
         /// <response code="200">게시글 댓글 목록 Response</response>
         /// <response code="404">게시글 댓글 목록을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">댓글 조회 중 오류 발생</response>
         [Authorize]
-        [HttpGet("comments/{articleId}")]
+        [HttpGet("articles/{articleId}/comments")]
         [Produces("application/json")]
         public async Task<ActionResult<CommentDTO>?> GetComments(long articleId)
         {
@@ -57,19 +57,19 @@ namespace board_dotnet.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST /api/comments/6
+        ///     POST /api/articles/314/comments
         ///     {
         ///        "comment": "댓글",
         ///     }
         ///
         /// </remarks>
-        /// <response code="201">게시글 댓글 목록 Response</response>
+        /// <response code="201">Header Location 추가된 댓글의 게시글 댓글 목록 URI / 추가된 게시글 Response</response>
         /// <response code="404">댓글을 추가 할 게시글을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">댓글 추가 중 오류 발생</response>
         [Authorize]
-        [HttpPost("comments/{articleId}")]
+        [HttpPost("articles/{articleId}/comments")]
         [Produces("application/json")]
-        public async Task<ActionResult<int>?> AddComment(long articleId, CommentWriteDTO request)
+        public async Task<ActionResult?> AddComment(long articleId, CommentWriteDTO request)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace board_dotnet.Controllers
                 if (result == null)
                     return NotFound("댓글을 추가 할 게시글을 찾을 수 없습니다.");
 
-                return StatusCode(201, result);
+                return CreatedAtAction(nameof(GetComments), new { articleId = result.articleId }, result);
             }
 
             catch
@@ -93,28 +93,28 @@ namespace board_dotnet.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /api/comments/131
+        ///     PUT /api/articles/314/comments/131
         ///     {
         ///        "comment": "댓글",
         ///     }
         ///
         /// </remarks>
-        /// <response code="201">게시글 댓글 목록 Response</response>
+        /// <response code="200">수정 된 댓글 Response</response>
         /// <response code="404">수정 할 댓글 정보를 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">댓글 업데이트 중 오류 발생</response>
         [Authorize]
-        [HttpPut("comments/{commentId}")]
+        [HttpPut("articles/{articleId}/comments/{commentId}")]
         [Produces("application/json")]
-        public async Task<ActionResult<Comment>?> UpdateComment(long commentId, CommentWriteDTO comment)
+        public async Task<ActionResult?> UpdateComment(long articleId, long commentId, CommentWriteDTO comment)
         {
             try
             {
-                var result = await _commentService.UpdateComment(commentId, comment);
+                var result = await _commentService.UpdateComment(articleId, commentId, comment);
 
                  if (result == null)
                     return NotFound("댓글을 찾을 수 없습니다.");
 
-                return StatusCode(201, result);
+                return Ok(result);
             }
 
             catch
@@ -129,15 +129,15 @@ namespace board_dotnet.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     DELETE /api/comments/131
+        ///     DELETE /api/articles/314/comments/131
         ///
         /// </remarks>
-        /// <response code="200">삭제 성공</response>
+        /// <response code="204">삭제 성공</response>
         /// <response code="404">삭제 할 댓글 정보를 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">댓글 삭제 중 오류 발생</response>
         [Authorize]
-        [HttpDelete("comments/{commentId}")]
-        public async Task<ActionResult<Comment>?> DeleteComment(long commentId)
+        [HttpDelete("articles/{articleId}/comments/{commentId}")]
+        public async Task<ActionResult?> DeleteComment(long commentId)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace board_dotnet.Controllers
                 if (result == null)
                     return NotFound("댓글을 찾을 수 없습니다.");
 
-                return Ok(result);
+                return NoContent();
             }
 
             catch

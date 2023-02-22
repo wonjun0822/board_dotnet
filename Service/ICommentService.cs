@@ -7,8 +7,8 @@ namespace board_dotnet.Service
     public interface ICommentService
     {
         Task<List<CommentDTO>?> GetComments(long articleId);
-        Task<List<CommentDTO>?> AddComment(long articleId, CommentWriteDTO request);
-        Task<List<CommentDTO>?> UpdateComment(long commentId, CommentWriteDTO request);
+        Task<CommentResultDTO?> AddComment(long articleId, CommentWriteDTO request);
+        Task<CommentResultDTO?> UpdateComment(long articleId, long commentId, CommentWriteDTO request);
         Task<EntityState?> DeleteComment(long commentId);
     }
 }

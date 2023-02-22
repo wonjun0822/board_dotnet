@@ -148,13 +148,13 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<long?> AddArticle(ArticleWriteDTO request)
+        public async Task<ArticleResultDTO?> AddArticle(ArticleWriteDTO request)
         {
             try
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    var article = new Article(request.title, request.content);
+                    var article = new Article(request.title.Trim(), request.content.Trim());
 
                     article.member = await _context.Members.Where(x => x.id == _authProvider.GetById()).FirstOrDefaultAsync();
 
@@ -188,8 +188,7 @@ namespace board_dotnet.Repository
 
                         await _context.Database.CommitTransactionAsync();
 
-                        return article.id;
-                        //return await GetArticle(article.id, false);
+                        return await ArticleResult(article.id);
                     }
 
                     else
@@ -203,7 +202,7 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<ArticleDetailDTO?> UpdateArticle(long id, ArticleWriteDTO request)
+        public async Task<ArticleResultDTO?> UpdateArticle(long id, ArticleWriteDTO request)
         {
             try
             {
@@ -214,32 +213,32 @@ namespace board_dotnet.Repository
 
                 else 
                 {
-                        article.title = request.title;
-                        article.content = request.content;
+                    article.title = request.title.Trim();
+                    article.content = request.content.Trim();
 
-                        if (request.files != null) 
+                    if (request.files != null) 
+                    {
+                        var uploadFiles = await _attachFileService.UploadFile(article.id, request.files);
+
+                        if (uploadFiles == null)
                         {
-                            var uploadFiles = await _attachFileService.UploadFile(article.id, request.files);
-
-                            if (uploadFiles == null)
-                            {
-                                return null;
-                            }
-
-                            else
-                            {
-                                foreach(var uploadFile in uploadFiles)
-                                {
-                                    var attachFile = new AttachFile(article.id, uploadFile.fileName, uploadFile.blobName);
-
-                                    _context.AttachFiles.Add(attachFile);
-                                }
-                            }
+                            return null;
                         }
 
-                        await _context.SaveChangesAsync();
+                        else
+                        {
+                            foreach(var uploadFile in uploadFiles)
+                            {
+                                var attachFile = new AttachFile(article.id, uploadFile.fileName, uploadFile.blobName);
 
-                        return await GetArticle(article.id, false);
+                                _context.AttachFiles.Add(attachFile);
+                            }
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    return await ArticleResult(article.id);
                 }
             }
 
@@ -274,6 +273,23 @@ namespace board_dotnet.Repository
             {
                 throw;
             }
+        }
+
+        private async Task<ArticleResultDTO> ArticleResult(long id) {
+            return await _context.Articles
+                .AsNoTracking()
+                .Where(x => x.id == id)
+                .Select(
+                    s => new ArticleResultDTO() {
+                        id = s.id,
+                        title = s.title,
+                        content = s.content,
+                        nickname = s.member.nickname,
+                        createAt = s.createAt,
+                        updateAt = s.updateAt
+                    }
+                )
+                .FirstOrDefaultAsync();
         }
     }
 }

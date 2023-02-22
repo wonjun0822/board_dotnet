@@ -37,7 +37,7 @@ namespace board_dotnet.Controllers
         /// </remarks>
         /// <response code="200">게시글 목록 Response / totalPage를 통해 마지막 Page가 어딘지 알 수 있음</response>
         /// <response code="404">게시글 목록을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">게시글 목록 조회 중 오류 발생</response>
         [HttpGet("articles_offset")]
         [Produces("application/json")]
         // [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,7 +75,7 @@ namespace board_dotnet.Controllers
         /// </remarks>
         /// <response code="200">게시글 목록 Response / return 받은 cursor 정보로 다음 게시글 목록을 찾을 수 있음 / lastPage = true 면 마지막 게시글 목록</response>
         /// <response code="404">게시글 목록을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">게시글 목록 조회 중 오류 발생</response>
         [HttpGet("articles_cursor")]
         [Produces("application/json")]
         public async Task<ActionResult<CursorDTO<List<ArticleDTO>?>?>> GetArticlesCursor(long cursor = 0)
@@ -107,7 +107,7 @@ namespace board_dotnet.Controllers
         /// </remarks>
         /// <response code="200">게시글 Response</response>
         /// <response code="404">게시글을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="500">게시글 조회 중 오류 발생</response>
         [Authorize]
         [HttpGet("articles/{id}")]
         [Produces("application/json")]
@@ -143,23 +143,31 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="201">추가 된 게시글 Response</response>
-        /// <response code="404">추가 한 게시글을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="201">Header Location 추가된 게시글 URI / Resposne Body 추가된 게시글</response>
+        /// <response code="500">게시글 추가 중 오류 발생</response>
         [Authorize]
         [HttpPost("articles")]
         [Produces("application/json")]
-        public async Task<ActionResult<ArticleDetailDTO>?> AddArticle([FromForm] ArticleWriteDTO article)
+        public async Task<ActionResult?> AddArticle([FromForm] ArticleWriteDTO request)
         {
             try
             {
-                var result = await _articleService.AddArticle(article);
+                if (request.title.Trim().Length == 0) {
+                    return BadRequest("제목은 빈 값일 수 없습니다.");
+                }
 
-                if (result == null)
-                    return NotFound("게시글을 찾을 수 없습니다.");
+                else if (request.content.Trim().Length == 0) {
+                    return BadRequest("내용은 빈 값일 수 없습니다.");
+                }
 
-                return CreatedAtAction(nameof(GetArticle), new { id = result }, result);
-                //return Created($"/api/articles/{result}", result);
+                else {
+                    var result = await _articleService.AddArticle(request);
+
+                    if (result == null)
+                        return Problem("게시글 추가 중 오류가 발생했습니다.");
+
+                    return CreatedAtAction(nameof(GetArticle), new { id = result.id }, result);
+                }
             }
 
             catch
@@ -182,22 +190,32 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="201">수정 된 게시글 Response</response>
-        /// <response code="404">수정할 게시글을 찾을 수 없음</response>
-        /// <response code="500">서버 오류</response>
+        /// <response code="200">업데이트 성공 / 수정 된 게시글 Response</response>
+        /// <response code="404">업데이트 할 게시글을 찾을 수 없음</response>
+        /// <response code="500">업데이트 중 오류 발생</response>
         [Authorize]
         [HttpPut("articles/{id}")]
         [Produces("application/json")]
-        public async Task<ActionResult<ArticleDetailDTO>?> UpdateArticle(long id, [FromForm] ArticleWriteDTO request)
+        public async Task<ActionResult?> UpdateArticle(long id, [FromForm] ArticleWriteDTO request)
         {
             try
             {
-                var result = await _articleService.UpdateArticle(id, request);
+                if (request.title.Trim().Length == 0) {
+                    return BadRequest("제목은 빈 값일 수 없습니다.");
+                }
 
-                if (result == null)
-                    return NotFound("게시글을 찾을 수 없습니다.");
+                else if (request.content.Trim().Length == 0) {
+                    return BadRequest("내용은 빈 값일 수 없습니다.");
+                }
 
-                return StatusCode(201, result);
+                else {
+                    var result = await _articleService.UpdateArticle(id, request);
+
+                    if (result == null)
+                        return NotFound("업데이트 할 게시글을 찾을 수 없습니다.");
+
+                    return Ok(result);
+                }
             }
 
             catch
@@ -219,7 +237,7 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="200">삭제 성공</response>
+        /// <response code="204">삭제 성공</response>
         /// <response code="404">삭제할 게시글을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [Authorize]
@@ -231,9 +249,9 @@ namespace board_dotnet.Controllers
                 var result = await _articleService.DeleteArticle(id);
 
                 if (result == null)
-                    return NotFound("게시글을 찾을 수 없습니다.");
+                    return NotFound("삭제 할 게시글을 찾을 수 없습니다.");
 
-                return Ok();
+                return NoContent();
             }
 
             catch
