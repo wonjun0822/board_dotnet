@@ -2,10 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using board_dotnet.Service;
-using board_dotnet.DTO;
-
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 
 namespace board_dotnet.Controllers
 {
@@ -44,7 +40,7 @@ namespace board_dotnet.Controllers
                 var result = await _attachFileService.DownloadFile(fileId);
 
                 if (result == null)
-                return NotFound("파일을 찾을 수 없습니다.");
+                    return NotFound("파일을 찾을 수 없습니다.");
 
                 return File(result.content, result.contentType, result.fileName);
             }
