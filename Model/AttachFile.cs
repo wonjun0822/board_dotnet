@@ -29,14 +29,14 @@ namespace board_dotnet.Model
         [Column(TypeName = "varchar(200)")]
         public string blobName { get; set; } = string.Empty;
 
-        [Column("create_by", TypeName = "varchar(50)")]
-        public string createBy { get; private set; } = string.Empty;
+        [Column("create_by")]
+        public long createBy { get; private set; }
 
         [Column("create_at")]
         public DateTime createAt { get; private set; }
 
-        [Column("update_by", TypeName = "varchar(100)")]
-        public string updateBy { get; private set; } = string.Empty;
+        [Column("update_by")]
+        public long updateBy { get; private set; }
 
         [Column("update_at")]
         public DateTime updateAt { get; private set; }

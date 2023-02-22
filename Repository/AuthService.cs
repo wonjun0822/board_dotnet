@@ -43,18 +43,18 @@ namespace board_dotnet.Repository
 
         public async Task<TokenDTO?> RefreshToken()
         {
-            string memberId = _authProvider.GetById();
+            long memberId = _authProvider.GetById();
 
-            string serverRefreshToken = await _redisService.StringGet(memberId);
+            string serverRefreshToken = await _redisService.StringGet(memberId.ToString());
             string clientRefreshToken = _authProvider.GetCookie("refreshToken");
 
             if (serverRefreshToken == clientRefreshToken) {
-                var member = await _memberService.GetMemberById(memberId);
+                var member = await _memberService.GetMemberById(Convert.ToInt64(memberId));
 
                 string accessToken = _jwtProvider.GenerateToken(member);
                 string refreshToken = GenerateRefreshToken();
 
-                await _redisService.StringSet(memberId, refreshToken, TimeSpan.FromDays(7));
+                await _redisService.StringSet(memberId.ToString(), refreshToken, TimeSpan.FromDays(7));
 
                 return new TokenDTO() {
                     accessToken = accessToken,
@@ -67,9 +67,9 @@ namespace board_dotnet.Repository
         
         public async Task Logout()
         {
-            string id = _authProvider.GetById();
+            long id = _authProvider.GetById();
             
-            await _redisService.DeleteKey(id);
+            await _redisService.DeleteKey(id.ToString());
         }
 
         private string GenerateRefreshToken()

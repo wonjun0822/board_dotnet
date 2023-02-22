@@ -4,7 +4,7 @@ namespace board_dotnet.JWT
 {
     public interface IAuthProvider
     {
-        string GetById();
+        long GetById();
         string GetCookie(string cookieName);
     }
 }

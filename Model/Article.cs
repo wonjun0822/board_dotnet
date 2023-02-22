@@ -36,13 +36,13 @@ namespace board_dotnet.Model
         public string? hashTag { get; set; }
 
         [Column("create_by", TypeName = "varchar(50)")]
-        public string createBy { get; private set; } = string.Empty;
+        public long createBy { get; private set; }
 
         [Column("create_at")]
         public DateTime createAt { get; private set; }
 
         [Column("update_by", TypeName = "varchar(100)")]
-        public string updateBy { get; private set; } = string.Empty;
+        public long updateBy { get; private set; }
 
         [Column("update_at")]
         public DateTime updateAt { get; private set; }

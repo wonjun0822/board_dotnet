@@ -35,7 +35,7 @@ namespace board_dotnet.Controllers
         ///
         ///     POST /api/auth
         ///     {
-        ///         "id": "test1",
+        ///         "email": "test1@test.com",
         ///         "pwd": "test"
         ///     }
         ///
@@ -46,7 +46,7 @@ namespace board_dotnet.Controllers
         [HttpPost("auth")]
         public async Task<ActionResult?> Login([FromBody] LoginDTO request)
         {
-            var token = await _authService.Login(request.id, request.pwd);
+            var token = await _authService.Login(request.email, request.pwd);
 
             if (token == null)
                 return NotFound();

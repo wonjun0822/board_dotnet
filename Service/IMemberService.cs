@@ -4,7 +4,7 @@ namespace board_dotnet.Service
 {
     public interface IMemberService
     {
-        Task<MemberDTO?> GetMemberById(string id);
-        Task<MemberDTO?> GetMemberByPassword(string id, string pwd);
+        Task<MemberDTO?> GetMemberById(long id);
+        Task<MemberDTO?> GetMemberByPassword(string email, string pwd);
     }
 }

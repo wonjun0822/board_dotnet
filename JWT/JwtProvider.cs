@@ -29,7 +29,7 @@ internal sealed class JwtProvider : IJwtProvider
             expires: DateTime.Now.AddDays(1),
             signingCredentials: credentials,
             claims: new Claim[] {
-                new Claim(ClaimTypes.NameIdentifier, member.id),
+                new Claim(ClaimTypes.NameIdentifier, member.id.ToString()),
                 new Claim(ClaimTypes.Email, member.email),
                 new Claim(ClaimTypes.Name, member.nickname)
             }

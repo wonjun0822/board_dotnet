@@ -6,17 +6,18 @@ namespace board_dotnet.Model
 {
     //[SwaggerExclude]
     [Table("member")]
-    [PrimaryKey(nameof(member_id))]
+    [PrimaryKey(nameof(id))]
+    [Index(nameof(email), IsUnique = true)]
     public class Member
     {
         [Key]
-        [Column(TypeName = "varchar(50)")]
-        public string member_id { get; set; } = string.Empty;
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long id { get; set; }
 
         [Column(TypeName = "varchar(20)")]
         public string pwd { get; set; } = string.Empty;
 
-        [Column(TypeName = "varchar(20)")]
+        [Column(TypeName = "varchar(50)")]
         public string email { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(20)")]

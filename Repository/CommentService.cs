@@ -54,7 +54,7 @@ namespace board_dotnet.Repository
 
                 var comment = new Comment(articleId, request.comment);
 
-                comment.member = await _context.Members.Where(x => x.member_id == _authProvider.GetById()).FirstOrDefaultAsync();
+                comment.member = await _context.Members.Where(x => x.id == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 _context.Comments.Add(comment);
 

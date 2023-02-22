@@ -39,7 +39,7 @@ namespace board_dotnet.Data
                 .HasOne<Member>(b => b.member)
                 .WithMany()
                 .HasForeignKey(b => b.createBy)
-                .HasPrincipalKey(b => b.member_id);
+                .HasPrincipalKey(b => b.id);
 
             modelBuilder.Entity<Article>()
                 .Navigation(b => b.member)
@@ -49,7 +49,7 @@ namespace board_dotnet.Data
                 .HasOne<Member>(b => b.member)
                 .WithMany()
                 .HasForeignKey(b => b.createBy)
-                .HasPrincipalKey(b => b.member_id);
+                .HasPrincipalKey(b => b.id);
 
             modelBuilder.Entity<Comment>()
                 .Navigation(b => b.member)

@@ -11,9 +11,9 @@ internal sealed class AuthProvider : IAuthProvider
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string GetById()
+    public long GetById()
     {
-        return _httpContextAccessor?.HttpContext?.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier)?.Value!;
+        return Convert.ToInt64(_httpContextAccessor?.HttpContext?.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier)?.Value!);
     }
 
     public string GetCookie(string cookieName)
