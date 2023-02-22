@@ -12,7 +12,7 @@ namespace board_dotnet.Model
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long id { get; set; }
+        public long id { get; }
 
         [Column(TypeName = "varchar(20)")]
         public string pwd { get; set; } = string.Empty;

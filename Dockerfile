@@ -14,12 +14,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine-amd64
 WORKDIR /app
 COPY --from=build /app .
 
-#COPY ./temp.json /app/appsettings.json
-
 #EXPOSE 8000
-#EXPOSE 443
+#EXPOSE 7000
 
 #ENV ASPNETCORE_URLS=http://+:8000
+#ENV ASPNETCORE_URLS=http://+:7000
 #ENV ASPNETCORE_URLS="https://+;http://+" 
 #ENV ASPNETCORE_HTTPS_PORT=443
 

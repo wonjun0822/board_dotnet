@@ -11,8 +11,8 @@ using board_dotnet.Data;
 namespace boarddotnet.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230222063752_Modify_Member")]
-    partial class ModifyMember
+    [Migration("20230222074832_InitialSetting")]
+    partial class InitialSetting
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,9 +36,8 @@ namespace boarddotnet.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("create_at");
 
-                    b.Property<string>("createBy")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
+                    b.Property<long>("createBy")
+                        .HasColumnType("bigint")
                         .HasColumnName("create_by");
 
                     b.Property<string>("hashTag")
@@ -53,9 +52,8 @@ namespace boarddotnet.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("update_at");
 
-                    b.Property<string>("updateBy")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
+                    b.Property<long>("updateBy")
+                        .HasColumnType("bigint")
                         .HasColumnName("update_by");
 
                     b.Property<int>("viewCount")

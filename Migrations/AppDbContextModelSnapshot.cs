@@ -33,9 +33,8 @@ namespace boarddotnet.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("create_at");
 
-                    b.Property<string>("createBy")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
+                    b.Property<long>("createBy")
+                        .HasColumnType("bigint")
                         .HasColumnName("create_by");
 
                     b.Property<string>("hashTag")
@@ -50,9 +49,8 @@ namespace boarddotnet.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("update_at");
 
-                    b.Property<string>("updateBy")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
+                    b.Property<long>("updateBy")
+                        .HasColumnType("bigint")
                         .HasColumnName("update_by");
 
                     b.Property<int>("viewCount")
