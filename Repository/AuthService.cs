@@ -23,9 +23,9 @@ namespace board_dotnet.Repository
             _redisService = redisService;
         }
 
-        public async Task<TokenDTO?> Login(string id, string pwd)
+        public async Task<TokenDTO?> Login(string email, string pwd)
         {
-            var member = await _memberService.GetMemberByPassword(id, pwd);
+            var member = await _memberService.GetMemberByPassword(email, pwd);
 
             if (member is null)
                 return null;
@@ -33,7 +33,7 @@ namespace board_dotnet.Repository
             string accessToken = _jwtProvider.GenerateToken(member);
             string refreshToken = GenerateRefreshToken();
 
-            await _redisService.StringSet(id, refreshToken, TimeSpan.FromDays(7));
+            await _redisService.StringSet(member.id.ToString(), refreshToken, TimeSpan.FromDays(7));
 
             return new TokenDTO() {
                 accessToken = accessToken,
