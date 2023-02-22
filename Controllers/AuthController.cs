@@ -19,14 +19,6 @@ namespace board_dotnet.Controllers
             _rediseService = redisService;
         }
 
-        [HttpGet("auth")]
-        public async Task<ActionResult?> Test()
-        {
-            await _rediseService.StringGet("wonjun");
-
-            return Ok();
-        }
-
         /// <summary>
         /// 로그인
         /// </summary>

@@ -15,10 +15,10 @@ namespace board_dotnet.Repository
         private readonly IAuthProvider _authProvider;
         private readonly IAttachFileService _attachFileService;
 
-        public ArticleService(AppDbContext context, IAuthProvider _authProvider, IAttachFileService attachFileService)
+        public ArticleService(AppDbContext context, IAuthProvider authProvider, IAttachFileService attachFileService)
         {
             _context = context;
-            _authProvider = _authProvider;
+            _authProvider = authProvider;
             _attachFileService = attachFileService;
         }
 
@@ -148,7 +148,7 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<ArticleDetailDTO?> AddArticle(ArticleWriteDTO request)
+        public async Task<long?> AddArticle(ArticleWriteDTO request)
         {
             try
             {
@@ -188,7 +188,8 @@ namespace board_dotnet.Repository
 
                         await _context.Database.CommitTransactionAsync();
 
-                        return await GetArticle(article.id, false);
+                        return article.id;
+                        //return await GetArticle(article.id, false);
                     }
 
                     else

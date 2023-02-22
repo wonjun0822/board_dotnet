@@ -11,7 +11,7 @@ namespace board_dotnet.Service
         Task<OffsetDTO<List<ArticleDTO>?>?> GetArticlesOffset(SearchType? searchType, string? searchKeyword, int pageIndex, int pageSize);
         Task<CursorDTO<List<ArticleDTO>?>?> GetArticlesCursor(long cursor);
         Task<ArticleDetailDTO?> GetArticle(long id, bool updateCount = true);
-        Task<ArticleDetailDTO?> AddArticle(ArticleWriteDTO article);
+        Task<long?> AddArticle(ArticleWriteDTO article);
         Task<ArticleDetailDTO?> UpdateArticle(long id, ArticleWriteDTO request);
         Task<EntityState?> DeleteArticle(long id);
     }

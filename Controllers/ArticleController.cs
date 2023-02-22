@@ -158,7 +158,8 @@ namespace board_dotnet.Controllers
                 if (result == null)
                     return NotFound("게시글을 찾을 수 없습니다.");
 
-                return StatusCode(201, result);
+                return CreatedAtAction(nameof(GetArticle), new { id = result }, result);
+                //return Created($"/api/articles/{result}", result);
             }
 
             catch
