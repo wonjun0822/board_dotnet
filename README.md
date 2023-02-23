@@ -1,8 +1,8 @@
-# board_dotnet
+# 게시판 서비스 .Net Core REST API
  - .Net Core 7
  - EF Core 7
  - MySQL 8.0.28 (Amazon RDS)
- - Redis (AWS EC2 Ubuntu Redis Server) Master 1 / Slave 2
+ - Redis (AWS EC2 Ubuntu Redis Server)
  
- - Azure App Services (https://wonjun-board.azurewebsites.net/index.html)
- - Azure Blob Storage (File 관리)
+ - Nginx(Reverse Proxy) -> API Server 구성
+ - https://www.wonjun.site/index.html
