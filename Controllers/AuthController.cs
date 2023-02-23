@@ -2,7 +2,6 @@ using board_dotnet.DTO;
 using board_dotnet.Service;
 
 using Microsoft.AspNetCore.Mvc;
-using StackExchange.Redis;
 
 namespace board_dotnet.Controllers
 {
