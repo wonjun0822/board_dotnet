@@ -9,6 +9,7 @@ namespace board_dotnet.Controllers
     /// <summary>
     /// 첨부파일 API
     /// </summary>
+    [Tags("첨부파일")]
     [ApiController]
     [Route("api")]
     public class AttachFileController : ControllerBase

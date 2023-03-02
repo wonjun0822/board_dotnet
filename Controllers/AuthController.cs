@@ -9,6 +9,7 @@ namespace board_dotnet.Controllers
     /// <summary>
     /// 인증 API
     /// </summary>
+    [Tags("인증")]
     [ApiController]
     [Route("api")]
     public class AuthController : ControllerBase

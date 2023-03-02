@@ -11,6 +11,7 @@ namespace board_dotnet.Controllers
     /// <summary>
     /// 댓글 API
     /// </summary>
+    [Tags("댓글")]
     [ApiController]
     [Route("api")]
     public class CommentController : ControllerBase

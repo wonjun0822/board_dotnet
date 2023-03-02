@@ -12,6 +12,7 @@ namespace board_dotnet.Controllers
     /// <summary>
     /// 게시글 API
     /// </summary>
+    [Tags("게시글")]
     [ApiController]
     [Route("api")]
     public class ArticleController : ControllerBase
