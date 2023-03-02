@@ -95,14 +95,39 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<EntityState?> DeleteComment(long commentId)
+        public async Task<bool> DeleteCommentAll(long articleId)
+        {
+            try
+            {
+                var comments = await _context.Comments.Where(s => s.articleId == articleId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
+
+                if (comments is null)
+                    return false;
+                    
+                else 
+                {
+                    _context.Comments.RemoveRange(comments);
+
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteComment(long commentId)
         {
             try
             {
                 var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (comment is null)
-                    return null;
+                    return false;
                     
                 else 
                 {
@@ -110,7 +135,7 @@ namespace board_dotnet.Repository
 
                     await _context.SaveChangesAsync();
 
-                    return _context.Entry(comment).State;
+                    return true;
                 }
             }
 

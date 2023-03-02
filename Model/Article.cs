@@ -9,8 +9,6 @@ namespace board_dotnet.Model
     [PrimaryKey(nameof(id))]
     [Index(nameof(title))]
     [Index(nameof(content))]
-    [Index(nameof(createBy))]
-    [Index(nameof(createAt))]
     public class Article // : IEquatable<Article>
     {
         public Article(string title, string content) 

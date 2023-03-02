@@ -13,12 +13,15 @@ namespace board_dotnet.Repository
     {
         private readonly AppDbContext _context;
         private readonly IAuthProvider _authProvider;
+
+        private readonly ICommentService _commentService;
         private readonly IAttachFileService _attachFileService;
 
-        public ArticleService(AppDbContext context, IAuthProvider authProvider, IAttachFileService attachFileService)
+        public ArticleService(AppDbContext context, IAuthProvider authProvider, ICommentService commentService, IAttachFileService attachFileService)
         {
             _context = context;
             _authProvider = authProvider;
+            _commentService = commentService;
             _attachFileService = attachFileService;
         }
 
@@ -177,7 +180,7 @@ namespace board_dotnet.Repository
                         {
                             foreach(var uploadFile in uploadFiles)
                             {
-                                var attachFile = new AttachFile(article.id, uploadFile.fileName, uploadFile.blobName);
+                                var attachFile = new AttachFile(article.id, uploadFile.fileName);
 
                                 _context.AttachFiles.Add(attachFile);
                             }
@@ -231,7 +234,7 @@ namespace board_dotnet.Repository
                         {
                             foreach(var uploadFile in uploadFiles)
                             {
-                                var attachFile = new AttachFile(article.id, uploadFile.fileName, uploadFile.blobName);
+                                var attachFile = new AttachFile(article.id, uploadFile.fileName);
 
                                 _context.AttachFiles.Add(attachFile);
                             }
@@ -250,24 +253,28 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<EntityState?> DeleteArticle(long id)
+        public async Task<bool> DeleteArticle(long id)
         {
             try
             {
-                var article = await _context.Articles.Where(x => x.id == id && x.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
+                var article = await _context.Articles.Where(x => x.id == id && x.createBy == _authProvider.GetById()).Include(s => s.articleComments).Include(s => s.articleFiles).FirstOrDefaultAsync();
 
                 if (article is null)
-                    return null;
+                    return false;
 
                 else 
                 {
-                    _context.Articles.Remove(article);
+                    if (article.articleComments.Count() > 0) 
+                        await _commentService.DeleteCommentAll(id);
 
-                    _context.ChangeTracker.DetectChanges();
+                    if (article.articleFiles.Count() > 0) 
+                        await _attachFileService.DeleteFileAll(id);
+
+                    _context.Articles.Remove(article);
 
                     await _context.SaveChangesAsync();
 
-                    return _context.Entry(article).State;
+                    return true;
                 }
             }
 

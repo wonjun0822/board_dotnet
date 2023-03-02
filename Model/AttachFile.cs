@@ -7,13 +7,13 @@ namespace board_dotnet.Model
 {
     [Table("attachFile")]
     [PrimaryKey(nameof(id))]
+    [Index(nameof(articleId))]
     public class AttachFile
     {
-        public AttachFile(long articleId, string fileName, string blobName) 
+        public AttachFile(long articleId, string fileName) 
         {
             this.articleId = articleId;
             this.fileName = fileName;
-            this.blobName = blobName;
         }
 
         [Key]
@@ -25,9 +25,6 @@ namespace board_dotnet.Model
 
         [Column(TypeName = "varchar(200)")]
         public string fileName { get; set; } = string.Empty;
-        
-        [Column(TypeName = "varchar(200)")]
-        public string blobName { get; set; } = string.Empty;
 
         [Column("create_by")]
         public long createBy { get; private set; }

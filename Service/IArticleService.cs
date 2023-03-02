@@ -13,6 +13,6 @@ namespace board_dotnet.Service
         Task<ArticleDetailDTO?> GetArticle(long id, bool updateCount = true);
         Task<ArticleResultDTO?> AddArticle(ArticleWriteDTO article);
         Task<ArticleResultDTO?> UpdateArticle(long id, ArticleWriteDTO request);
-        Task<EntityState?> DeleteArticle(long id);
+        Task<bool> DeleteArticle(long id);
     }
 }

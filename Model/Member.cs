@@ -8,6 +8,7 @@ namespace board_dotnet.Model
     [Table("member")]
     [PrimaryKey(nameof(id))]
     [Index(nameof(email), IsUnique = true)]
+    [Index(nameof(nickname))]
     public class Member
     {
         [Key]

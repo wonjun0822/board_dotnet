@@ -88,7 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
             _services?.AddScoped<ICommentService, CommentService>();
             _services?.AddScoped<IMemberService, MemberService>();
             _services?.AddScoped<IAttachFileService, AttachFileService>();
-            _services?.AddScoped<IAzureStorageService, AzureStorageService>();
+            _services?.AddScoped<IStorageService, StorageService>();
             _services?.AddScoped<IRedisService, RedisService>();
 
             IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_config["ConnectionStrings:Redis"].ToString());

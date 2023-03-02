@@ -7,9 +7,7 @@ namespace board_dotnet.Model
 {
     [Table("comment")]
     [PrimaryKey(nameof(id))]
-    [Index(nameof(comment))]
-    [Index(nameof(createBy))]
-    [Index(nameof(createAt))]
+    [Index(nameof(articleId))]
     public class Comment
     {
         public Comment(long articleId, string comment) 

@@ -143,7 +143,7 @@ namespace board_dotnet.Controllers
             {
                 var result = await _commentService.DeleteComment(commentId);
 
-                if (result == null)
+                if (!result)
                     return NotFound("댓글을 찾을 수 없습니다.");
 
                 return NoContent();

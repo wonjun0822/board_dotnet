@@ -10,17 +10,17 @@ public class AttachFileService : IAttachFileService
 {
     private readonly AppDbContext _context;
     
-    private readonly IAzureStorageService _azureStorageService;
+    private readonly IStorageService _storageService;
     private readonly IAuthProvider _authProvider;
 
-    public AttachFileService(AppDbContext context, IAzureStorageService azureStorageService, IAuthProvider authProvider)
+    public AttachFileService(AppDbContext context, IStorageService storageService, IAuthProvider authProvider)
     {
         _context = context;
-        _azureStorageService = azureStorageService;
+        _storageService = storageService;
         _authProvider = authProvider;
     }
 
-    public async Task<List<AttachFileUploadDTO>> UploadFile(long articleId, ICollection<IFormFile>? files)
+    public async Task<List<AttachFileUploadDTO>> UploadFile(long articleId, IFormFileCollection? files)
     {
         try
         {
@@ -28,26 +28,16 @@ public class AttachFileService : IAttachFileService
 
             foreach (IFormFile file in files)
             {
-                string uploadFileName = Path.GetFileNameWithoutExtension(file?.FileName) + "_" + DateTime.Now.ToString("yyymmddHHmmss") + Path.GetExtension(file?.FileName);
-
-                var blob = await _azureStorageService.UploadFile(file, uploadFileName);
-
-                if (blob != null)
+                if (await _storageService.UploadFile(string.Format("articles/{0}", articleId), file))
                 {
                     attachFiles.Add(new AttachFileUploadDTO() {
-                        fileName = file.FileName,
-                        blobName = uploadFileName
+                        fileName = file.FileName
                     });
                 }
 
                 else
                 {                
-                    foreach (var item in attachFiles)
-                    {
-                        _azureStorageService.DeleteFile(item.blobName);
-
-                        attachFiles.Remove(item);
-                    }
+                    await _storageService.DeleteDirectory(string.Format("articles/{0}", articleId));
 
                     break;
                 }
@@ -62,18 +52,16 @@ public class AttachFileService : IAttachFileService
         }
     }
 
-    public async Task<AttachFileDownloadDTO?> DownloadFile(long fileId)
+    public async Task<AttachFileDownloadDTO?> DownloadFile(long articleId, long fileId)
     {
         try
         {
-            var attachFile = await _context.AttachFiles.FirstOrDefaultAsync(x => x.id == fileId);
+            var attachFile = await _context.AttachFiles.FirstOrDefaultAsync(x => x.articleId == articleId && x.id == fileId);
 
             if (attachFile == null)
                 return null;
 
-            var result = await _azureStorageService.DownloadFile(attachFile.blobName);
-
-            return new AttachFileDownloadDTO() { content = result.Content, contentType = result.Details.ContentType, fileName = attachFile.fileName };
+            return await _storageService.DownloadFile(string.Format("articles/{0}/{1}", articleId, attachFile.fileName));
         }
 
         catch
@@ -82,22 +70,69 @@ public class AttachFileService : IAttachFileService
         }
     }
 
-    public async Task<EntityState?> DeleteFile(long fileId)
+    public async Task<AttachFileDownloadDTO?> DownloadFileAll(long articleId)
     {
         try
         {
-            var attachFile = await _context.AttachFiles.Where(s => s.id == fileId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
+            var attachFile = await _context.AttachFiles.FirstOrDefaultAsync(x => x.articleId == articleId);
+
+            if (attachFile == null)
+                return null;
+
+            return await _storageService.DownloadDicrectory(string.Format("articles/{0}", articleId));
+        }
+
+        catch
+        {
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteFile(long articleId, long fileId)
+    {
+        try
+        {
+            var attachFile = await _context.AttachFiles.Where(s => s.articleId == articleId && s.id == fileId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
             if (attachFile is null)
-                return null;
+                return false;
                 
             else 
             {
+                await _storageService.DeleteFile(string.Format("articles/{0}/{1}", articleId, attachFile.fileName));
+
                 _context.AttachFiles.Remove(attachFile);
 
                 await _context.SaveChangesAsync();
 
-                return _context.Entry(attachFile).State;
+                return true;
+            }
+        }
+
+        catch
+        {
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteFileAll(long articleId)
+    {
+        try
+        {
+            var attachFiles = await _context.AttachFiles.Where(s => s.articleId == articleId && s.createBy == _authProvider.GetById()).ToListAsync();
+
+            if (attachFiles is null)
+                return false;
+                
+            else 
+            {
+                await _storageService.DeleteDirectory(string.Format("articles/{0}", articleId));
+
+                _context.AttachFiles.RemoveRange(attachFiles);
+
+                await _context.SaveChangesAsync();
+
+                return true;
             }
         }
 

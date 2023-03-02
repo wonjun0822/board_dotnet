@@ -10,6 +10,6 @@ namespace board_dotnet.DTO
         [Required]
         public string content { get; set; } = string.Empty;
 
-        public ICollection<IFormFile>? files { get; set; }
+        public IFormFileCollection? files { get; set; }
     }
 }

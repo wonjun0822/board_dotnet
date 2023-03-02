@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using board_dotnet.Service;
 using board_dotnet.DTO;
 using board_dotnet.Enum;
-using board_dotnet.Repository;
 
 namespace board_dotnet.Controllers
 {
@@ -248,7 +247,7 @@ namespace board_dotnet.Controllers
             {
                 var result = await _articleService.DeleteArticle(id);
 
-                if (result == null)
+                if (!result)
                     return NotFound("삭제 할 게시글을 찾을 수 없습니다.");
 
                 return NoContent();
