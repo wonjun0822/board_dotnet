@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 using board_dotnet.Service;
+using System.Net.Mime;
 
 namespace board_dotnet.Controllers
 {
     /// <summary>
-    /// 파일
+    /// 첨부파일 API
     /// </summary>
     [ApiController]
     [Route("api")]
@@ -14,6 +15,9 @@ namespace board_dotnet.Controllers
     {
         private readonly IAttachFileService _attachFileService;
 
+        /// <summary>
+        /// 첨부파일 API
+        /// </summary>
         public AttachFileController(IAttachFileService attachFileService)
         {
             _attachFileService = attachFileService;
@@ -28,11 +32,15 @@ namespace board_dotnet.Controllers
         ///     GET /api/articles/536/files
         ///
         /// </remarks>
+        /// <param name="articleId">게시글 ID</param>
         /// <response code="200">파일 다운로드</response>
         /// <response code="404">파일을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpGet("articles/{articleId}/files")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DownloadFileAll(long articleId)
         {
             try
@@ -60,11 +68,16 @@ namespace board_dotnet.Controllers
         ///     GET /api/articles/536/files/5
         ///
         /// </remarks>
+        /// <param name="articleId">게시글 ID</param>
+        /// <param name="fileId">첨부파일 ID</param>
         /// <response code="200">파일 다운로드</response>
         /// <response code="404">파일을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpGet("articles/{articleId}/files/{fileId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DownloadFile(long articleId, long fileId)
         {
             try
@@ -92,21 +105,25 @@ namespace board_dotnet.Controllers
         ///     DELETE /api/articles/536/files/5
         ///
         /// </remarks>
-        /// <response code="200">파일 삭제</response>
+        /// <param name="articleId">게시글 ID</param>
+        /// <response code="204">파일 삭제</response>
         /// <response code="404">파일을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpDelete("articles/{articleId}/files")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteFileAll(long articleId)
         {
             try
             {
                 var result = await _attachFileService.DeleteFileAll(articleId);
 
-                if (result == null)
+                if (!result)
                     return NotFound("파일을 찾을 수 없습니다.");
 
-                return Ok(result);
+                return NoContent();
             }
 
             catch
@@ -124,21 +141,26 @@ namespace board_dotnet.Controllers
         ///     DELETE /api/articles/536/files/5
         ///
         /// </remarks>
-        /// <response code="200">파일 삭제</response>
+        /// <param name="articleId">게시글 ID</param>
+        /// <param name="fileId">첨부파일 ID</param>
+        /// <response code="204">파일 삭제</response>
         /// <response code="404">파일을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpDelete("articles/{articleId}/files/{fileId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteFile(long articleId, long fileId)
         {
             try
             {
                 var result = await _attachFileService.DeleteFile(articleId, fileId);
 
-                if (result == null)
+                if (!result)
                     return NotFound("파일을 찾을 수 없습니다.");
 
-                return Ok(result);
+                return NoContent();
             }
 
             catch

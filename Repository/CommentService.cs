@@ -120,11 +120,11 @@ namespace board_dotnet.Repository
             }
         }
 
-        public async Task<bool> DeleteComment(long commentId)
+        public async Task<bool> DeleteComment(long articleId, long commentId)
         {
             try
             {
-                var comment = await _context.Comments.Where(s => s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
+                var comment = await _context.Comments.Where(s => s.articleId == articleId && s.id == commentId && s.createBy == _authProvider.GetById()).FirstOrDefaultAsync();
 
                 if (comment is null)
                     return false;

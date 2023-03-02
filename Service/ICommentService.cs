@@ -10,6 +10,6 @@ namespace board_dotnet.Service
         Task<CommentResultDTO?> AddComment(long articleId, CommentWriteDTO request);
         Task<CommentResultDTO?> UpdateComment(long articleId, long commentId, CommentWriteDTO request);
         Task<bool> DeleteCommentAll(long articleId);
-        Task<bool> DeleteComment(long commentId);
+        Task<bool> DeleteComment(long articleId, long commentId);
     }
 }

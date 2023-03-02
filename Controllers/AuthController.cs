@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using board_dotnet.DTO;
 using board_dotnet.Service;
 
@@ -5,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace board_dotnet.Controllers
 {
+    /// <summary>
+    /// 인증 API
+    /// </summary>
     [ApiController]
     [Route("api")]
     public class AuthController : ControllerBase
@@ -12,6 +16,9 @@ namespace board_dotnet.Controllers
         private readonly IAuthService _authService;
         private readonly IRedisService _rediseService;
 
+        /// <summary>
+        /// 인증 API
+        /// </summary>
         public AuthController(IAuthService authService, IRedisService redisService)
         {
             _authService = authService;
@@ -31,10 +38,13 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
-        /// <response code="200">Token 발급</response>
+        /// <response code="200">Access Token Response</response>
         /// <response code="404">사용자 정보를 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [HttpPost("auth")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult?> Login([FromBody] LoginDTO request)
         {
             var token = await _authService.Login(request.email, request.pwd);
@@ -44,7 +54,7 @@ namespace board_dotnet.Controllers
 
             SetRefreshTokenCookie(token.refreshToken);
 
-            return Ok(token);
+            return Ok(token.accessToken);
         }
 
         /// <summary>
@@ -57,9 +67,12 @@ namespace board_dotnet.Controllers
         ///
         /// </remarks>
         /// <response code="200">Token 재발급</response>
-        /// <response code="404"></response>
+        /// <response code="404">재발급 Token을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [HttpPut("auth")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult?> RefreshToken()
         {
             var token = await _authService.RefreshToken();
@@ -84,6 +97,8 @@ namespace board_dotnet.Controllers
         /// <response code="200">RefreshToken 삭제</response>
         /// <response code="500">서버 오류</response>
         [HttpDelete("auth")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Logout()
         {
             await _authService.Logout();

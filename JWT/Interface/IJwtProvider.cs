@@ -1,10 +1,10 @@
 using board_dotnet.DTO;
-using board_dotnet.DTO;
 
-namespace board_dotnet.JWT
+namespace board_dotnet.JWT;
+
+/// JWT Provider
+public interface IJwtProvider
 {
-    public interface IJwtProvider
-    {
-        string GenerateToken(MemberDTO member);
-    }
+    /// Token Create
+    string GenerateToken(MemberDTO member);
 }

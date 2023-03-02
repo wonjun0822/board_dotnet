@@ -1,10 +1,11 @@
-using board_dotnet.Model;
+namespace board_dotnet.JWT;
 
-namespace board_dotnet.JWT
+/// Auth Provider
+public interface IAuthProvider
 {
-    public interface IAuthProvider
-    {
-        long GetById();
-        string GetCookie(string cookieName);
-    }
+    /// 로그인한 사용자 ID 가져오기
+    long GetById();
+
+    /// Cookie 정보 가져오기
+    string GetCookie(string cookieName);
 }

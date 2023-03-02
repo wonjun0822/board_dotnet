@@ -5,10 +5,12 @@ using board_dotnet.Service;
 using board_dotnet.DTO;
 using board_dotnet.Enum;
 
+using System.Net.Mime;
+
 namespace board_dotnet.Controllers
 {
     /// <summary>
-    /// 게시글
+    /// 게시글 API
     /// </summary>
     [ApiController]
     [Route("api")]
@@ -16,6 +18,9 @@ namespace board_dotnet.Controllers
     {
         private readonly IArticleService _articleService;
 
+        /// <summary>
+        /// 게시글 API
+        /// </summary>
         public ArticleController(IArticleService articleService)
         {
             _articleService = articleService;
@@ -29,19 +34,25 @@ namespace board_dotnet.Controllers
         ///
         ///     GET /api/articles_offset
         ///     {
+        ///        "searchType": "title",
+        ///        "searchKeyword": "test",        
         ///        "pageIndex": 1,
         ///        "pageSize": 20,
         ///     }
         ///
         /// </remarks>
+        /// <param name="searchType">검색 조건 제목(title), 내용(content)</param>
+        /// <param name="searchKeyword">검색 Keyword</param>
+        /// <param name="pageIndex">조회 할 PageIndex</param>
+        /// <param name="pageSize">조회 할 PageSize</param>
         /// <response code="200">게시글 목록 Response / totalPage를 통해 마지막 Page가 어딘지 알 수 있음</response>
         /// <response code="404">게시글 목록을 찾을 수 없음</response>
         /// <response code="500">게시글 목록 조회 중 오류 발생</response>
         [HttpGet("articles_offset")]
         [Produces("application/json")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task <ActionResult<OffsetDTO<List<ArticleDTO>?>?>> GetArticlesOffSet(SearchType? searchType, string? searchKeyword, int pageIndex = 1, int pageSize = 20)
         {
             try
@@ -72,11 +83,15 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
+        /// <param name="cursor">조회 할 기준 cursor(게시글 ID) 정보</param>
         /// <response code="200">게시글 목록 Response / return 받은 cursor 정보로 다음 게시글 목록을 찾을 수 있음 / lastPage = true 면 마지막 게시글 목록</response>
         /// <response code="404">게시글 목록을 찾을 수 없음</response>
         /// <response code="500">게시글 목록 조회 중 오류 발생</response>
         [HttpGet("articles_cursor")]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CursorDTO<List<ArticleDTO>?>?>> GetArticlesCursor(long cursor = 0)
         {
             try
@@ -104,12 +119,16 @@ namespace board_dotnet.Controllers
         ///     GET /api/articles/6
         ///
         /// </remarks>
+        /// <param name="id">게시글 ID</param>
         /// <response code="200">게시글 Response</response>
         /// <response code="404">게시글을 찾을 수 없음</response>
         /// <response code="500">게시글 조회 중 오류 발생</response>
         [Authorize]
         [HttpGet("articles/{id}")]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ArticleDetailDTO>?> GetArticle(long id)
         {
             try
@@ -142,11 +161,16 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
+        /// <param name="request">11</param>
         /// <response code="201">Header Location 추가된 게시글 URI / Resposne Body 추가된 게시글</response>
+        /// <response code="400">게시글 Paramter 잘못된 요청</response>
         /// <response code="500">게시글 추가 중 오류 발생</response>
         [Authorize]
         [HttpPost("articles")]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), 400, MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult?> AddArticle([FromForm] ArticleWriteDTO request)
         {
             try
@@ -189,12 +213,16 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
+        /// <param name="id">게시글 ID</param>
         /// <response code="200">업데이트 성공 / 수정 된 게시글 Response</response>
         /// <response code="404">업데이트 할 게시글을 찾을 수 없음</response>
         /// <response code="500">업데이트 중 오류 발생</response>
         [Authorize]
         [HttpPut("articles/{id}")]
         [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult?> UpdateArticle(long id, [FromForm] ArticleWriteDTO request)
         {
             try
@@ -236,11 +264,15 @@ namespace board_dotnet.Controllers
         ///     }
         ///
         /// </remarks>
+        /// <param name="id">게시글 ID</param>
         /// <response code="204">삭제 성공</response>
         /// <response code="404">삭제할 게시글을 찾을 수 없음</response>
         /// <response code="500">서버 오류</response>
         [Authorize]
         [HttpDelete("articles/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), 404, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteArticle(long id)
         {
             try

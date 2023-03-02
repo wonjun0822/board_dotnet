@@ -41,6 +41,11 @@ builder.Services.AddSwaggerGen(c => {
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    c.SwaggerDoc("v1", new OpenApiInfo {
+        Version= "v1",
+        Title = ".Net Core 7 게시판 서비스",
+        Description = ".Net Core 7 / EF Core 7 활용한 게시판 서비스 예제"
+    });
 });
 
 builder.Services.AddServiceCollection(builder.Configuration);
